@@ -1,0 +1,129 @@
+/* This file is part of Mino.
+ *
+ * See the NOTICE file distributed with this work for copyright information.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+ Package mino.syntax;
+
+Tokens
+
+  class_kwd = ;
+  var_kwd = ;
+  fun_kwd = ;
+  primitive_kwd = ;
+  if_kwd = ;
+  while_kwd = ;
+  true_kwd = ;
+  false_kwd = ;
+  special_kwd = ;
+  else_kwd = ;
+  is_kwd = ;
+
+  class_name = ;
+  field_name = ;
+  identifier = ;
+
+  number = ;
+
+  plus = ;
+  eq = ;
+  not = ;
+  assign = ;
+  dot = ;
+
+  l_br = ;
+  r_br = ;
+  l_par = ;
+  r_par = ;
+  sc = ;
+  comma = ;
+
+Productions
+
+  file =
+    classdef* instruction*;
+
+  classdef =
+    class_kwd identifier special? l_br member* r_br;
+
+  special =
+    special_kwd class_name;
+
+  member =
+    {field} var_kwd field_name initializer? sc |
+    {method} fun_kwd identifier l_par id_list? r_par l_br instruction* r_br |
+    {operator} fun_kwd operator l_par id_list? r_par l_br instruction* r_br |
+    {primitive_method} primitive_kwd identifier l_par id_list? r_par sc |
+    {primitive_operator} primitive_kwd operator l_par id_list? r_par sc;
+
+  id_list =
+    identifier additional_id*;
+
+  additional_id =
+    comma identifier;
+
+  operator =
+    {plus} plus |
+    {eq} eq |
+    {not} not;
+
+  initializer =
+    assign expression;
+
+  instruction =
+    {declaration} var_kwd identifier initializer? sc |
+    {var_assign} identifier assign expression sc |
+    {field_assign} field_name assign expression sc |
+    {method_call} identifier l_par expression_list? r_par sc |
+    {if} if_kwd l_par expression r_par l_br instruction* r_br else? |
+    {while} while_kwd l_par expression r_par l_br instruction* r_br;
+
+  expression_list =
+    expression additional_expression*;
+
+  additional_expression =
+    comma expression;
+
+  else =
+    else_kwd l_br instruction* r_br;
+
+  expression =
+    {is} expression is_kwd eq_expression |
+    {simple} eq_expression;
+
+  eq_expression =
+    {eq} eq_expression eq add_expression |
+    {simple} add_expression;
+
+  add_expression =
+    {add} add_expression plus left_expression |
+    {simple} left_expression;
+
+  left_expression =
+    {not} not left_expression |
+    {simple} right_expression;
+
+  right_expression =
+    {call} right_expression dot identifier l_par expression_list? r_par |
+    {simple} term;
+
+  term =
+    {selfcall} identifier l_par expression_list? r_par |
+    {par} l_par expression r_par |
+    {num} number |
+    {var} identifier |
+    {true} true_kwd |
+    {false} false_kwd |
+    {field} field_name;
