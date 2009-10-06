@@ -1,0 +1,7 @@
+Mino is a minimal object language.
+
+The purpose of this project is to illustrate the construction of a
+small interpreter and a small compiler for an object language.
+
+The lexer is built using sablecc-4-beta.1 and the parser/AST using
+sablecc-3.2.
