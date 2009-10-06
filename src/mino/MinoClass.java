@@ -22,6 +22,7 @@ import java.util.Map;
 
 import mino.syntax.node.AClassdef;
 import mino.syntax.node.AFieldMember;
+import mino.syntax.node.AMethodMember;
 import mino.syntax.node.ASpecial;
 
 public class MinoClass {
@@ -33,6 +34,8 @@ public class MinoClass {
     private final MinoClass superClass;
 
     private final Map<String, MinoField> nameToField = new LinkedHashMap<String, MinoField>();
+
+    private final Map<String, MinoMethod> nameToMethod = new LinkedHashMap<String, MinoMethod>();
 
     private MinoClass(
             AClassdef definition) {
@@ -126,5 +129,18 @@ public class MinoClass {
         }
 
         return minoClass;
+    }
+
+    public void addMethod(
+            AMethodMember definition) {
+
+        String name = definition.getIdentifier().getText();
+
+        if (this.nameToMethod.containsKey(name)) {
+            throw new RuntimeException("duplicate method " + name);
+        }
+
+        MinoMethod minoMethod = new NormalMinoMethod(definition);
+        this.nameToMethod.put(name, minoMethod);
     }
 }
