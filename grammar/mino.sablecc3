@@ -83,10 +83,10 @@ Productions
     assign expression;
 
   instruction =
-    {declaration} var_kwd identifier initializer? sc |
+    {declaration} var_kwd identifier sc |
     {var_assign} identifier assign expression sc |
     {field_assign} field_name assign expression sc |
-    {method_call} identifier l_par expression_list? r_par sc |
+    {expression} expression sc |
     {if} if_kwd l_par expression r_par l_br instruction* r_br else? |
     {while} while_kwd l_par expression r_par l_br instruction* r_br;
 
