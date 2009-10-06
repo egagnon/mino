@@ -56,7 +56,7 @@ Productions
     classdef* instruction*;
 
   classdef =
-    class_kwd identifier special? l_br member* r_br;
+    class_kwd class_name special? l_br member* r_br;
 
   special =
     special_kwd class_name;
@@ -122,8 +122,8 @@ Productions
   term =
     {selfcall} identifier l_par expression_list? r_par |
     {par} l_par expression r_par |
-    {num} number |
+    {field} field_name |
     {var} identifier |
+    {num} number |
     {true} true_kwd |
-    {false} false_kwd |
-    {field} field_name;
+    {false} false_kwd;
