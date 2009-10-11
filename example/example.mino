@@ -18,10 +18,21 @@
 class Object {
 
   primitive print(obj);
+
+  fun == (obj) {
+
+    return self is obj;
+  }
 }
 
-class Boolean
+class Bool
   special Object {
+}
+
+class Int
+  special Object {
+
+  primitive +(i);
 }
 
 print(true);

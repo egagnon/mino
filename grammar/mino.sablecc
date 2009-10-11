@@ -30,10 +30,12 @@ Lexer
   special_kwd = 'special';
   else_kwd = 'else';
   is_kwd = 'is';
+  return_kwd = 'return';
+  self_kwd = 'self';
 
   class_name = upper name_char*;
   field_name = '_' lower name_char*;
-  identifier = lower name_char*;
+  id = lower name_char*;
 
   name_char = upper | lower | '_';
   upper = 'A'..'Z';
@@ -69,10 +71,12 @@ Token
   special_kwd,
   else_kwd,
   is_kwd,
+  return_kwd,
+  self_kwd,
 
   class_name,
   field_name,
-  identifier,
+  id,
 
   number,
 

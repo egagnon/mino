@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
- Package mino.syntax;
+Package mino.syntax;
 
 Tokens
 
@@ -30,10 +30,12 @@ Tokens
   special_kwd = ;
   else_kwd = ;
   is_kwd = ;
+  return_kwd = ;
+  self_kwd = ;
 
   class_name = ;
   field_name = ;
-  identifier = ;
+  id = ;
 
   number = ;
 
@@ -63,16 +65,16 @@ Productions
 
   member =
     {field} var_kwd field_name initializer? sc |
-    {method} fun_kwd identifier l_par id_list? r_par l_br instruction* r_br |
+    {method} fun_kwd id l_par id_list? r_par l_br instruction* r_br |
     {operator} fun_kwd operator l_par id_list? r_par l_br instruction* r_br |
-    {primitive_method} primitive_kwd identifier l_par id_list? r_par sc |
+    {primitive_method} primitive_kwd id l_par id_list? r_par sc |
     {primitive_operator} primitive_kwd operator l_par id_list? r_par sc;
 
   id_list =
-    identifier additional_id*;
+    id additional_id*;
 
   additional_id =
-    comma identifier;
+    comma id;
 
   operator =
     {plus} plus |
@@ -83,12 +85,13 @@ Productions
     assign expression;
 
   instruction =
-    {declaration} var_kwd identifier sc |
-    {var_assign} identifier assign expression sc |
+    {declaration} var_kwd id sc |
+    {var_assign} id assign expression sc |
     {field_assign} field_name assign expression sc |
     {expression} expression sc |
     {if} if_kwd l_par expression r_par l_br instruction* r_br else? |
-    {while} while_kwd l_par expression r_par l_br instruction* r_br;
+    {while} while_kwd l_par expression r_par l_br instruction* r_br |
+    {return} return_kwd expression sc;
 
   expression_list =
     expression additional_expression*;
@@ -116,14 +119,15 @@ Productions
     {simple} right_expression;
 
   right_expression =
-    {call} right_expression dot identifier l_par expression_list? r_par |
+    {call} right_expression dot id l_par expression_list? r_par |
     {simple} term;
 
   term =
-    {selfcall} identifier l_par expression_list? r_par |
+    {selfcall} id l_par expression_list? r_par |
     {par} l_par expression r_par |
     {field} field_name |
-    {var} identifier |
+    {var} id |
     {num} number |
+    {self} self_kwd |
     {true} true_kwd |
     {false} false_kwd;
