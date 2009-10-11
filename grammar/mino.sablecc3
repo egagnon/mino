@@ -64,7 +64,7 @@ Productions
     special_kwd class_name;
 
   member =
-    {field} var_kwd field_name initializer? sc |
+    {field} var_kwd field_name sc |
     {method} fun_kwd id l_par id_list? r_par l_br instruction* r_br |
     {operator} fun_kwd operator l_par id_list? r_par l_br instruction* r_br |
     {primitive_method} primitive_kwd id l_par id_list? r_par sc |
@@ -81,11 +81,7 @@ Productions
     {eq} eq |
     {not} not;
 
-  initializer =
-    assign expression;
-
   instruction =
-    {declaration} var_kwd id sc |
     {var_assign} id assign expression sc |
     {field_assign} field_name assign expression sc |
     {expression} expression sc |
@@ -103,11 +99,8 @@ Productions
     else_kwd l_br instruction* r_br;
 
   expression =
-    {is} expression is_kwd eq_expression |
-    {simple} eq_expression;
-
-  eq_expression =
-    {eq} eq_expression eq add_expression |
+    {is} expression is_kwd add_expression |
+    {eq} expression eq add_expression |
     {simple} add_expression;
 
   add_expression =

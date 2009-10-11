@@ -19,7 +19,7 @@ class Object {
 
   primitive print(obj);
 
-  fun == (obj) {
+  fun ==(obj) {
 
     return self is obj;
   }
