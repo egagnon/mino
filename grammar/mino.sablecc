@@ -33,6 +33,7 @@ Lexer
   return_kwd = 'return';
   self_kwd = 'self';
   null_kwd = 'null';
+  new_kwd = 'new';
 
   class_name = upper name_char*;
   field_name = '_' lower name_char*;
@@ -78,6 +79,7 @@ Token
   return_kwd,
   self_kwd,
   null_kwd,
+  new_kwd,
 
   class_name,
   field_name,

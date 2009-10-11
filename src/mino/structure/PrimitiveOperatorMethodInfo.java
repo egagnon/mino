@@ -15,47 +15,25 @@
  * limitations under the License.
  */
 
-class Object {
+package mino.structure;
 
-  fun ==(obj) {
-    return self is obj;
-  }
+import mino.syntax.node.*;
 
-  fun print(obj) {
-    obj.to_s().to_system_out();
-  }
+public class PrimitiveOperatorMethodInfo
+        extends MethodInfo {
 
-  fun to_s() {
-    return null;
-  }
-}
+    private final APrimitiveOperatorMember definition;
 
-class Boolean {
+    private final Token operatorToken;
 
-  fun to_s() {
-    if(self == true) {
-      return "true";
+    public PrimitiveOperatorMethodInfo(
+            MethodTable methodTable,
+            APrimitiveOperatorMember definition,
+            Token operatorToken) {
+
+        super(methodTable);
+        this.definition = definition;
+        this.operatorToken = operatorToken;
     }
-    return "false";
-  }
+
 }
-
-class Integer {
-
-  primitive +(i);
-  primitive to_s();
-}
-
-class String {
-
-  primitive +(s);
-
-  fun to_s() {
-    return self;
-  }
-
-  primitive to_system_out();
-}
-
-print("Hello world!");
-print("This is the sum of 5 + 7: " + (5 + 7).to_s());

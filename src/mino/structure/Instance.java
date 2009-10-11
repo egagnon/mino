@@ -15,18 +15,32 @@
  * limitations under the License.
  */
 
-package mino;
+package mino.structure;
 
-import mino.syntax.node.*;
+import java.util.*;
 
-public class NormalMinoMethod
-        extends MinoMethod {
+import mino.walker.*;
 
-    private final AMethodMember declaration;
+public class Instance {
 
-    public NormalMinoMethod(
-            AMethodMember declaration) {
+    private final ClassInfo classInfo;
 
-        this.declaration = declaration;
+    private final Map<String, Instance> fieldNameToValueMap = new LinkedHashMap<String, Instance>();
+
+    public Instance(
+            ClassInfo classInfo) {
+
+        this.classInfo = classInfo;
+        for (FieldInfo fieldInfo : classInfo.getFieldTable().getFields()) {
+            this.fieldNameToValueMap.put(fieldInfo.getName(), null);
+        }
     }
+
+    public void invokeMain(
+            InterpreterEngine interpreterEngine) {
+
+        // TODO Auto-generated method stub
+
+    }
+
 }

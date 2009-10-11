@@ -33,6 +33,7 @@ Tokens
   return_kwd = ;
   self_kwd = ;
   null_kwd = ;
+  new_kwd = ;
 
   class_name = ;
   field_name = ;
@@ -58,23 +59,23 @@ Tokens
 Productions
 
   file =
-    classdef* instruction*;
+    [classdefs]:classdef* [stms]:stm*;
 
   classdef =
-    class_kwd class_name special? l_br member* r_br;
+    class_kwd class_name special? l_br [members]:member* r_br;
 
   special =
     special_kwd class_name;
 
   member =
     {field} var_kwd field_name sc |
-    {method} fun_kwd id l_par id_list? r_par l_br instruction* r_br |
-    {operator} fun_kwd operator l_par id_list? r_par l_br instruction* r_br |
+    {method} fun_kwd id l_par id_list? r_par l_br [stms]:stm* r_br |
+    {operator} fun_kwd operator l_par id_list? r_par l_br [stms]:stm* r_br |
     {primitive_method} primitive_kwd id l_par id_list? r_par sc |
     {primitive_operator} primitive_kwd operator l_par id_list? r_par sc;
 
   id_list =
-    id additional_id*;
+    id [additional_ids]:additional_id*;
 
   additional_id =
     comma id;
@@ -84,23 +85,23 @@ Productions
     {eq} eq |
     {not} not;
 
-  instruction =
+  stm =
     {var_assign} id assign expression sc |
     {field_assign} field_name assign expression sc |
     {call} call sc |
     {self_call} self_call sc |
-    {if} if_kwd l_par expression r_par l_br instruction* r_br else? |
-    {while} while_kwd l_par expression r_par l_br instruction* r_br |
+    {if} if_kwd l_par expression r_par l_br [stms]:stm* r_br else? |
+    {while} while_kwd l_par expression r_par l_br [stms]:stm* r_br |
     {return} return_kwd expression sc;
 
   expression_list =
-    expression additional_expression*;
+    expression [additional_expressions]:additional_expression*;
 
   additional_expression =
     comma expression;
 
   else =
-    else_kwd l_br instruction* r_br;
+    else_kwd l_br [stms]:stm* r_br;
 
   expression =
     {is} expression is_kwd add_expression |
@@ -122,6 +123,7 @@ Productions
   term =
     {self_call} self_call |
     {par} l_par expression r_par |
+    {new} new_kwd class_name |
     {field} field_name |
     {var} id |
     {num} number |

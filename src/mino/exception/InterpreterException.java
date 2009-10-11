@@ -15,19 +15,29 @@
  * limitations under the License.
  */
 
-package mino;
+package mino.exception;
 
 import mino.syntax.node.*;
 
-public class OperatorMinoMethod
-        extends MinoMethod {
+public class InterpreterException
+        extends RuntimeException {
 
-    private final AOperatorMember declaration;
+    private final String message;
 
-    public OperatorMinoMethod(
-            AOperatorMember declaration) {
+    private final Token token;
 
-        this.declaration = declaration;
+    public InterpreterException(
+            String message,
+            Token token) {
+
+        this.message = message;
+        this.token = token;
     }
 
+    @Override
+    public String getMessage() {
+
+        return this.message + " at line " + this.token.getLine() + " position "
+                + this.token.getPos();
+    }
 }

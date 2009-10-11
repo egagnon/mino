@@ -15,8 +15,25 @@
  * limitations under the License.
  */
 
-package mino;
+package mino.structure;
 
-public abstract class MinoMethod {
+import mino.syntax.node.*;
+
+public class OperatorMethodInfo
+        extends MethodInfo {
+
+    private final AOperatorMember definition;
+
+    private final Token operatorToken;
+
+    public OperatorMethodInfo(
+            MethodTable methodTable,
+            AOperatorMember definition,
+            Token operatorToken) {
+
+        super(methodTable);
+        this.definition = definition;
+        this.operatorToken = operatorToken;
+    }
 
 }

@@ -19,9 +19,11 @@ package mino;
 
 import java.io.*;
 
+import mino.exception.*;
 import mino.syntax.lexer.*;
 import mino.syntax.node.*;
 import mino.syntax.parser.*;
+import mino.walker.*;
 
 public class MinoInterpreter {
 
@@ -31,9 +33,11 @@ public class MinoInterpreter {
         Reader in = null;
 
         if (args.length == 0) {
+            // read from standard input
             in = new InputStreamReader(System.in);
         }
         else if (args.length == 1) {
+            // read from given file
             try {
                 in = new FileReader(args[0]);
             }
@@ -55,6 +59,18 @@ public class MinoInterpreter {
             // interpret
             new InterpreterEngine().visit(syntaxTree);
         }
+        catch (IOException e) {
+            String inputName;
+            if (args.length == 0) {
+                inputName = "standard input";
+            }
+            else {
+                inputName = "file '" + args[0] + "'";
+            }
+            System.err.println("INPUT ERROR: " + e.getMessage()
+                    + " while reading " + inputName + ".");
+            System.exit(1);
+        }
         catch (ParserException e) {
             Token token = e.getToken();
             System.err.println("SYNTAX ERROR: unexpected '" + token.getText()
@@ -68,19 +84,12 @@ public class MinoInterpreter {
                     + ".");
             System.exit(1);
         }
-        catch (IOException e) {
-            String inputName;
-            if (args.length == 0) {
-                inputName = "standard input";
-            }
-            else {
-                inputName = "file '" + args[0] + "'";
-            }
-            System.err.println("INPUT ERROR: " + e.getMessage()
-                    + " while reading " + inputName + ".");
+        catch (InterpreterException e) {
+            System.err.println("INTERPRETER ERROR: " + e.getMessage() + ".");
             System.exit(1);
         }
 
+        // finish normally
         System.exit(0);
     }
 

@@ -15,43 +15,21 @@
  * limitations under the License.
  */
 
-package mino;
+package mino.structure;
 
-import mino.syntax.analysis.*;
 import mino.syntax.node.*;
 
-public class InterpreterEngine
-        extends DepthFirstAdapter
-        implements Switch {
+public class MainMethodInfo
+        extends MethodInfo {
 
-    private MinoClass currentClass;
+    private final AFile definition;
 
-    @Override
-    public void inAClassdef(
-            AClassdef node) {
+    public MainMethodInfo(
+            MethodTable methodTable,
+            AFile definition) {
 
-        this.currentClass = MinoClass.addClass(node);
-    }
-
-    @Override
-    public void outAFieldMember(
-            AFieldMember node) {
-
-        this.currentClass.addField(node);
-    }
-
-    @Override
-    public void outAMethodMember(
-            AMethodMember node) {
-
-        this.currentClass.addMethod(node);
-    }
-
-    @Override
-    public void outAOperatorMember(
-            AOperatorMember node) {
-
-        this.currentClass.addMethod(node);
+        super(methodTable);
+        this.definition = definition;
     }
 
 }

@@ -15,29 +15,15 @@
  * limitations under the License.
  */
 
-package mino;
+package mino.structure;
 
-import mino.syntax.node.*;
+public abstract class MethodInfo {
 
-public class InterpreterException
-        extends RuntimeException {
+    private final MethodTable methodTable;
 
-    private final String message;
+    public MethodInfo(
+            MethodTable methodTable) {
 
-    private final Token token;
-
-    public InterpreterException(
-            String message,
-            Token token) {
-
-        this.message = message;
-        this.token = token;
-    }
-
-    @Override
-    public String getMessage() {
-
-        return this.message + " at line " + this.token.getLine() + " position "
-                + this.token.getPos();
+        this.methodTable = methodTable;
     }
 }

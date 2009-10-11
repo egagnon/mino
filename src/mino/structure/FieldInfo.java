@@ -15,18 +15,27 @@
  * limitations under the License.
  */
 
-package mino;
+package mino.structure;
 
 import mino.syntax.node.*;
 
-public class MinoField {
+public class FieldInfo {
 
-    private final AFieldMember declaration;
+    private final FieldTable fieldTable;
 
-    MinoField(
-            AFieldMember declaration) {
+    private final AFieldMember definition;
 
-        this.declaration = declaration;
+    FieldInfo(
+            FieldTable fieldTable,
+            AFieldMember definition) {
+
+        this.fieldTable = fieldTable;
+        this.definition = definition;
+    }
+
+    public String getName() {
+
+        return this.definition.getFieldName().getText();
     }
 
 }
