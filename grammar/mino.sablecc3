@@ -84,7 +84,8 @@ Productions
   instruction =
     {var_assign} id assign expression sc |
     {field_assign} field_name assign expression sc |
-    {expression} expression sc |
+    {call} call sc |
+    {self_call} self_call sc |
     {if} if_kwd l_par expression r_par l_br instruction* r_br else? |
     {while} while_kwd l_par expression r_par l_br instruction* r_br |
     {return} return_kwd expression sc;
@@ -112,11 +113,11 @@ Productions
     {simple} right_expression;
 
   right_expression =
-    {call} right_expression dot id l_par expression_list? r_par |
+    {call} call |
     {simple} term;
 
   term =
-    {selfcall} id l_par expression_list? r_par |
+    {self_call} self_call |
     {par} l_par expression r_par |
     {field} field_name |
     {var} id |
@@ -124,3 +125,9 @@ Productions
     {self} self_kwd |
     {true} true_kwd |
     {false} false_kwd;
+
+  call =
+    right_expression dot id l_par expression_list? r_par;
+
+  self_call =
+    id l_par expression_list? r_par;
