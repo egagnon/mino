@@ -86,43 +86,43 @@ Productions
     {not} not;
 
   stm =
-    {var_assign} id assign expression sc |
-    {field_assign} field_name assign expression sc |
+    {var_assign} id assign exp sc |
+    {field_assign} field_name assign exp sc |
     {call} call sc |
     {self_call} self_call sc |
-    {if} if_kwd l_par expression r_par l_br [stms]:stm* r_br else? |
-    {while} while_kwd l_par expression r_par l_br [stms]:stm* r_br |
-    {return} return_kwd expression sc;
+    {if} if_kwd l_par exp r_par l_br [stms]:stm* r_br else? |
+    {while} while_kwd l_par exp r_par l_br [stms]:stm* r_br |
+    {return} return_kwd exp sc;
 
-  expression_list =
-    expression [additional_expressions]:additional_expression*;
+  exp_list =
+    exp [additional_exps]:additional_exp*;
 
-  additional_expression =
-    comma expression;
+  additional_exp =
+    comma exp;
 
   else =
     else_kwd l_br [stms]:stm* r_br;
 
-  expression =
-    {is} expression is_kwd add_expression |
-    {eq} expression eq add_expression |
-    {simple} add_expression;
+  exp =
+    {is} exp is_kwd add_exp |
+    {eq} exp eq add_exp |
+    {simple} add_exp;
 
-  add_expression =
-    {add} add_expression plus left_expression |
-    {simple} left_expression;
+  add_exp =
+    {add} add_exp plus left_exp |
+    {simple} left_exp;
 
-  left_expression =
-    {not} not left_expression |
-    {simple} right_expression;
+  left_exp =
+    {not} not left_exp |
+    {simple} right_exp;
 
-  right_expression =
+  right_exp =
     {call} call |
     {simple} term;
 
   term =
     {self_call} self_call |
-    {par} l_par expression r_par |
+    {par} l_par exp r_par |
     {new} new_kwd class_name |
     {field} field_name |
     {var} id |
@@ -134,7 +134,7 @@ Productions
     {string} string;
 
   call =
-    right_expression dot id l_par expression_list? r_par;
+    right_exp dot id l_par exp_list? r_par;
 
   self_call =
-    id l_par expression_list? r_par;
+    id l_par exp_list? r_par;
