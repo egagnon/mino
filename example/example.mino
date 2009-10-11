@@ -17,22 +17,48 @@
 
 class Object {
 
-  primitive print(obj);
-
   fun ==(obj) {
-
     return self is obj;
   }
+
+  fun print(obj) {
+    obj.to_s().to_system_out();
+  }
+
+  primitive to_s();
+
 }
 
 class Bool
   special Object {
+
+  fun to_s() {
+    if(self == true) {
+      return "true";
+    }
+    return "false";
+  }
 }
 
 class Int
   special Object {
 
   primitive +(i);
+
+  primitive to_s();
 }
 
-print(true);
+class String
+  special Object {
+
+  primitive +(s);
+
+  fun to_s() {
+    return self;
+  }
+
+  primitive to_system_out();
+}
+
+print("Hello world!");
+print("This is the sum of 5 + 7: " + (5 + 7).to_s());

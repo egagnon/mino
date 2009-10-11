@@ -43,6 +43,9 @@ Lexer
 
   number = ('0'..'9')+;
 
+  string = Shortest '"' string_char* '"';
+  string_char = Any - ('"' | #10 | #13);
+
   plus = '+';
   eq = '==';
   not = '!';
@@ -79,6 +82,8 @@ Token
   id,
 
   number,
+
+  string,
 
   plus,
   eq,

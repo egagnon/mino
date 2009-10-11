@@ -39,6 +39,8 @@ Tokens
 
   number = ;
 
+  string = ;
+
   plus = ;
   eq = ;
   not = ;
@@ -124,7 +126,8 @@ Productions
     {num} number |
     {self} self_kwd |
     {true} true_kwd |
-    {false} false_kwd;
+    {false} false_kwd |
+    {string} string;
 
   call =
     right_expression dot id l_par expression_list? r_par;
