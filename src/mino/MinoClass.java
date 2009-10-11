@@ -130,7 +130,7 @@ public class MinoClass {
     public void addMethod(
             AMethodMember definition) {
 
-        String name = definition.getIdentifier().getText();
+        String name = definition.getId().getText();
 
         if (this.nameToMethod.containsKey(name)) {
             throw new RuntimeException("duplicate method " + name);
@@ -138,5 +138,36 @@ public class MinoClass {
 
         MinoMethod minoMethod = new NormalMinoMethod(definition);
         this.nameToMethod.put(name, minoMethod);
+    }
+
+    public void addMethod(
+            AOperatorMember definition) {
+
+        String name = getOperatorName(definition.getOperator());
+
+        if (this.nameToMethod.containsKey(name)) {
+            throw new RuntimeException("duplicate method " + name);
+        }
+
+        MinoMethod minoMethod = new OperatorMinoMethod(definition);
+        this.nameToMethod.put(name, minoMethod);
+    }
+
+    private String getOperatorName(
+            POperator operator) {
+
+        if (operator instanceof APlusOperator) {
+            return "+";
+        }
+
+        if (operator instanceof AEqOperator) {
+            return "==";
+        }
+
+        if (operator instanceof ANotOperator) {
+            return "!";
+        }
+
+        throw new RuntimeException("unknown operator");
     }
 }

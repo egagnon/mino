@@ -17,41 +17,17 @@
 
 package mino;
 
-import mino.syntax.analysis.*;
 import mino.syntax.node.*;
 
-public class InterpreterEngine
-        extends DepthFirstAdapter
-        implements Switch {
+public class OperatorMinoMethod
+        extends MinoMethod {
 
-    private MinoClass currentClass;
+    private final AOperatorMember declaration;
 
-    @Override
-    public void inAClassdef(
-            AClassdef node) {
+    public OperatorMinoMethod(
+            AOperatorMember declaration) {
 
-        this.currentClass = MinoClass.addClass(node);
-    }
-
-    @Override
-    public void outAFieldMember(
-            AFieldMember node) {
-
-        this.currentClass.addField(node);
-    }
-
-    @Override
-    public void outAMethodMember(
-            AMethodMember node) {
-
-        this.currentClass.addMethod(node);
-    }
-
-    @Override
-    public void outAOperatorMember(
-            AOperatorMember node) {
-
-        this.currentClass.addMethod(node);
+        this.declaration = declaration;
     }
 
 }
