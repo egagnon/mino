@@ -26,13 +26,62 @@ import mino.syntax.parser.*;
 public class MinoInterpreter {
 
     public static void main(
-            String[] args)
-            throws ParserException, LexerException, IOException {
+            String[] args) {
 
-        Parser parser = new Parser(new Lexer(new FileReader(args[0])));
-        Node syntaxTree = parser.parse();
+        Reader in = null;
 
-        syntaxTree.apply(new InterpreterEngine());
+        if (args.length == 0) {
+            in = new InputStreamReader(System.in);
+        }
+        else if (args.length == 1) {
+            try {
+                in = new FileReader(args[0]);
+            }
+            catch (FileNotFoundException e) {
+                System.err.println("INPUT ERROR: file not found '" + args[0]
+                        + "'.");
+                System.exit(1);
+            }
+        }
+        else {
+            System.err.println("COMMAND-LINE ERROR: too many arguments.");
+            System.exit(1);
+        }
+
+        try {
+            // parse
+            Node syntaxTree = new Parser(new Lexer(in)).parse();
+
+            // interpret
+            new InterpreterEngine().visit(syntaxTree);
+        }
+        catch (ParserException e) {
+            Token token = e.getToken();
+            System.err.println("SYNTAX ERROR: unexpected '" + token.getText()
+                    + "' at line " + token.getLine() + " position "
+                    + token.getPos() + ".");
+            System.exit(1);
+        }
+        catch (LexerException e) {
+            System.err.println("LEXICAL ERROR: unexpected '" + e.getChar()
+                    + "' at line " + e.getLine() + " position " + e.getPos()
+                    + ".");
+            System.exit(1);
+        }
+        catch (IOException e) {
+            String inputName;
+            if (args.length == 0) {
+                inputName = "standard input";
+            }
+            else {
+                inputName = "file '" + args[0] + "'";
+            }
+            System.err.println("INPUT ERROR: " + e.getMessage()
+                    + " while reading " + inputName + ".");
+            System.exit(1);
+        }
+
+        System.exit(0);
     }
 
 }
