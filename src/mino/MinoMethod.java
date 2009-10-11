@@ -17,7 +17,6 @@
 
 package mino;
 
-
 public abstract class MinoMethod {
 
 }

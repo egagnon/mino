@@ -17,7 +17,7 @@
 
 package mino;
 
-import mino.syntax.node.AFieldMember;
+import mino.syntax.node.*;
 
 public class MinoField {
 

@@ -17,7 +17,7 @@
 
 package mino;
 
-import mino.syntax.node.AMethodMember;
+import mino.syntax.node.*;
 
 public class NormalMinoMethod
         extends MinoMethod {

@@ -17,11 +17,8 @@
 
 package mino;
 
-import mino.syntax.analysis.DepthFirstAdapter;
-import mino.syntax.node.AClassdef;
-import mino.syntax.node.AFieldMember;
-import mino.syntax.node.AMethodMember;
-import mino.syntax.node.Switch;
+import mino.syntax.analysis.*;
+import mino.syntax.node.*;
 
 public class InterpreterEngine
         extends DepthFirstAdapter

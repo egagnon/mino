@@ -17,13 +17,9 @@
 
 package mino;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
-import mino.syntax.node.AClassdef;
-import mino.syntax.node.AFieldMember;
-import mino.syntax.node.AMethodMember;
-import mino.syntax.node.ASpecial;
+import mino.syntax.node.*;
 
 public class MinoClass {
 

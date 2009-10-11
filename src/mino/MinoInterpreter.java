@@ -17,14 +17,11 @@
 
 package mino;
 
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 
-import mino.syntax.lexer.Lexer;
-import mino.syntax.lexer.LexerException;
-import mino.syntax.node.Node;
-import mino.syntax.parser.Parser;
-import mino.syntax.parser.ParserException;
+import mino.syntax.lexer.*;
+import mino.syntax.node.*;
+import mino.syntax.parser.*;
 
 public class MinoInterpreter {
 
