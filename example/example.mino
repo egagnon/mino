@@ -25,12 +25,13 @@ class Object {
     obj.to_s().to_system_out();
   }
 
-  primitive to_s();
-
+  fun to_s() {
+    return null;
+  }
 }
 
 class Bool
-  special Object {
+    special Object {
 
   fun to_s() {
     if(self == true) {
@@ -41,15 +42,14 @@ class Bool
 }
 
 class Int
-  special Object {
+    special Object {
 
   primitive +(i);
-
   primitive to_s();
 }
 
 class String
-  special Object {
+    special Object {
 
   primitive +(s);
 

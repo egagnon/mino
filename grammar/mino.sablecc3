@@ -32,6 +32,7 @@ Tokens
   is_kwd = ;
   return_kwd = ;
   self_kwd = ;
+  null_kwd = ;
 
   class_name = ;
   field_name = ;
@@ -124,6 +125,7 @@ Productions
     {field} field_name |
     {var} id |
     {num} number |
+    {null} null_kwd |
     {self} self_kwd |
     {true} true_kwd |
     {false} false_kwd |
