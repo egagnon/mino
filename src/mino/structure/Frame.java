@@ -36,6 +36,8 @@ public class Frame {
 
     private int nextParamIndex;
 
+    private Token currentLocation;
+
     public Frame(
             Frame previousFrame,
             Instance receiver,
@@ -104,5 +106,16 @@ public class Frame {
             String name) {
 
         return this.varNameToValueMap.get(name);
+    }
+
+    public Token getCurrentLocation() {
+
+        return this.currentLocation;
+    }
+
+    public void setCurrentLocation(
+            Token currentLocation) {
+
+        this.currentLocation = currentLocation;
     }
 }

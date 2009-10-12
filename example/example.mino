@@ -59,6 +59,18 @@ class String {
   primitive to_system_out();
 }
 
+class A {
+  fun m() {
+    print("A.m()");
+  }
+}
+
+class B {
+  fun m() {
+    print("B.m()");
+  }
+}
+
 print("Hello world!");
 print("This is the sum of 5 + 7: " + (5 + 7).to_s());
 if(3 isa String) {
@@ -68,3 +80,16 @@ else {
   print("false");
 }
 
+i = 0;
+while(!(i == 2)) {
+  if(i == 0) {
+    o = new A;
+  }
+  else {
+    o = new B;
+  }
+  o.m();
+  i = i + 1;
+}
+print(i);
+o.k();

@@ -90,6 +90,7 @@ public class MinoInterpreter {
             interpreterEngine.visit(syntaxTree);
         }
         catch (InterpreterException e) {
+            System.out.flush();
             System.err.println("INTERPRETER ERROR: " + e.getMessage() + ".");
             interpreterEngine.printStackTrace();
             System.exit(1);

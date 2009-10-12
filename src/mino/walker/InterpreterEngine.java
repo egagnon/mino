@@ -52,8 +52,6 @@ public class InterpreterEngine
 
     private StringClassInfo stringClassInfo;
 
-    private Token errorToken;
-
     public void visit(
             Node node) {
 
@@ -64,15 +62,20 @@ public class InterpreterEngine
 
         Frame frame = this.currentFrame;
         while (frame != null) {
-            MethodInfo invokedMethod = this.currentFrame.getInvokedMethod();
+            Token locationToken = frame.getCurrentLocation();
+            String location = "";
+            if (locationToken != null) {
+                location = " at line " + locationToken.getLine() + " position "
+                        + locationToken.getPos();
+            }
+            MethodInfo invokedMethod = frame.getInvokedMethod();
             if (invokedMethod != null) {
                 System.err.println(" in "
-                        + this.currentFrame.getReceiver().getClassInfo()
-                                .getName() + "." + invokedMethod.getName()
-                        + "()");
+                        + frame.getReceiver().getClassInfo().getName() + "."
+                        + invokedMethod.getName() + "()" + location);
             }
             else {
-                System.err.println(" in main program");
+                System.err.println(" in main program" + location);
             }
 
             frame = frame.getPreviousFrame();
@@ -127,18 +130,19 @@ public class InterpreterEngine
 
     private Instance execute(
             MethodInfo invokedMethod,
-            Frame frame) {
+            Frame frame,
+            Token location) {
 
+        this.currentFrame.setCurrentLocation(location);
         this.currentFrame = frame;
         try {
             invokedMethod.execute(this);
         }
         catch (ReturnException e) {
         }
-        finally {
-            this.currentFrame = frame.getPreviousFrame();
-        }
 
+        this.currentFrame = frame.getPreviousFrame();
+        this.currentFrame.setCurrentLocation(null);
         return frame.getReturnValue();
     }
 
@@ -415,14 +419,7 @@ public class InterpreterEngine
                     .getMethodInfo(node.getEq());
             Frame frame = new Frame(this.currentFrame, left, invokedMethod);
             frame.setParam(right);
-            if (invokedMethod instanceof PrimitiveOperatorMethodInfo) {
-                this.errorToken = node.getEq();
-                this.expEval = execute(invokedMethod, frame);
-                this.errorToken = null;
-            }
-            else {
-                this.expEval = execute(invokedMethod, frame);
-            }
+            this.expEval = execute(invokedMethod, frame, node.getEq());
         }
     }
 
@@ -463,14 +460,7 @@ public class InterpreterEngine
                     .getMethodInfo(node.getPlus());
             Frame frame = new Frame(this.currentFrame, left, invokedMethod);
             frame.setParam(right);
-            if (invokedMethod instanceof PrimitiveOperatorMethodInfo) {
-                this.errorToken = node.getPlus();
-                this.expEval = execute(invokedMethod, frame);
-                this.errorToken = null;
-            }
-            else {
-                this.expEval = execute(invokedMethod, frame);
-            }
+            this.expEval = execute(invokedMethod, frame, node.getPlus());
         }
     }
 
@@ -599,14 +589,7 @@ public class InterpreterEngine
             frame.setParam(getExpEval(exp));
         }
 
-        if (invokedMethod instanceof PrimitiveNormalMethodInfo) {
-            this.errorToken = node.getId();
-            this.expEval = execute(invokedMethod, frame);
-            this.errorToken = null;
-        }
-        else {
-            this.expEval = execute(invokedMethod, frame);
-        }
+        this.expEval = execute(invokedMethod, frame, node.getId());
     }
 
     @Override
@@ -632,14 +615,7 @@ public class InterpreterEngine
             frame.setParam(getExpEval(exp));
         }
 
-        if (invokedMethod instanceof PrimitiveNormalMethodInfo) {
-            this.errorToken = node.getId();
-            this.expEval = execute(invokedMethod, frame);
-            this.errorToken = null;
-        }
-        else {
-            this.expEval = execute(invokedMethod, frame);
-        }
+        this.expEval = execute(invokedMethod, frame, node.getId());
     }
 
     @Override
@@ -669,7 +645,7 @@ public class InterpreterEngine
         Instance arg = this.currentFrame.getVarOrNull(argName);
         if (!arg.isa(this.integerClassInfo)) {
             throw new InterpreterException("right argument is not Integer",
-                    this.errorToken);
+                    this.currentFrame.getPreviousFrame().getCurrentLocation());
         }
 
         BigInteger left = self.getValue();
@@ -687,7 +663,7 @@ public class InterpreterEngine
         Instance arg = this.currentFrame.getVarOrNull(argName);
         if (!arg.isa(this.stringClassInfo)) {
             throw new InterpreterException("right argument is not String",
-                    this.errorToken);
+                    this.currentFrame.getPreviousFrame().getCurrentLocation());
         }
 
         String left = self.getValue();
@@ -701,13 +677,18 @@ public class InterpreterEngine
 
         String argName = methodInfo.getParamName(0);
         Instance arg = this.currentFrame.getVarOrNull(argName);
+        if (arg == null) {
+            throw new InterpreterException("abort argument is null",
+                    this.currentFrame.getPreviousFrame().getCurrentLocation());
+        }
         if (!arg.isa(this.stringClassInfo)) {
             throw new InterpreterException("abort argument is not String",
-                    this.errorToken);
+                    this.currentFrame.getPreviousFrame().getCurrentLocation());
         }
 
         String message = "ABORT: " + ((StringInstance) arg).getValue();
-        throw new InterpreterException(message, this.errorToken);
+        throw new InterpreterException(message, this.currentFrame
+                .getPreviousFrame().getCurrentLocation());
     }
 
     public void integerToS(
