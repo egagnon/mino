@@ -82,8 +82,7 @@ Productions
 
   operator =
     {plus} plus |
-    {eq} eq |
-    {not} not;
+    {eq} eq;
 
   stm =
     {var_assign} id assign exp sc |

@@ -250,13 +250,6 @@ public class InterpreterEngine
     }
 
     @Override
-    public void caseANotOperator(
-            ANotOperator node) {
-
-        this.operatorToken = node.getNot();
-    }
-
-    @Override
     public void caseAVarAssignStm(
             AVarAssignStm node) {
 
