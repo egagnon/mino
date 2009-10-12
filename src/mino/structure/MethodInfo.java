@@ -48,12 +48,16 @@ public abstract class MethodInfo {
 
     public abstract String getName();
 
-    public final String getParamName(
+    public String getParamName(
             int i) {
 
         return this.paramNames.get(i);
     }
 
+    public int getParamCount() {
+        return this.paramNames.size();
+    }
+    
     public abstract void execute(
             InterpreterEngine interpreterEngine);
 }

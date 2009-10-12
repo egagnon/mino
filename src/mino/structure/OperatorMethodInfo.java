@@ -19,6 +19,7 @@ package mino.structure;
 
 import java.util.*;
 
+import mino.exception.*;
 import mino.syntax.node.*;
 import mino.walker.*;
 
@@ -38,6 +39,21 @@ public class OperatorMethodInfo
         super(methodTable, params);
         this.definition = definition;
         this.operatorToken = operatorToken;
+        
+        if(getName().equals("+")) {
+            if(getParamCount() != 1) {
+                throw new InterpreterException("method + must have a single parameter", operatorToken);
+            }
+        }
+        else if(getName().equals("==")) {
+            if(getParamCount() != 1) {
+                throw new InterpreterException("method == must have a single parameter", operatorToken);
+            }
+        }
+        else {
+            // if this point is reached, there's a bug
+            throw new RuntimeException("Unhandled operator " + getName());
+        }
     }
 
     @Override
@@ -50,7 +66,8 @@ public class OperatorMethodInfo
     public void execute(
             InterpreterEngine interpreterEngine) {
 
-        // TODO Auto-generated method stub
-
+        for(PStm stm : definition.getStms()) {
+            interpreterEngine.visit(stm);
+        }
     }
 }
