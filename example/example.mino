@@ -28,6 +28,8 @@ class Object {
   fun to_s() {
     return null;
   }
+
+  primitive abort(message);
 }
 
 class Boolean {

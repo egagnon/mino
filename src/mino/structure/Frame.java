@@ -19,6 +19,7 @@ package mino.structure;
 
 import java.util.*;
 
+import mino.exception.*;
 import mino.syntax.node.*;
 
 public class Frame {
@@ -85,5 +86,23 @@ public class Frame {
     public Instance getReturnValue() {
 
         return this.returnValue;
+    }
+
+    public Instance getVar(
+            TId id) {
+
+        String name = id.getText();
+
+        if (!this.varNameToValueMap.containsKey(name)) {
+            throw new InterpreterException("unknown variable " + name, id);
+        }
+
+        return this.varNameToValueMap.get(name);
+    }
+
+    public Instance getVarOrNull(
+            String name) {
+
+        return this.varNameToValueMap.get(name);
     }
 }

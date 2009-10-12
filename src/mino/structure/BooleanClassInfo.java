@@ -17,37 +17,36 @@
 
 package mino.structure;
 
-import java.util.*;
-
 import mino.syntax.node.*;
-import mino.walker.*;
 
-public class NormalMethodInfo
-        extends MethodInfo {
+public class BooleanClassInfo
+        extends ClassInfo {
 
-    private final AMethodMember definition;
+    private final Instance trueInstance = new BooleanInstance(this, true);
 
-    NormalMethodInfo(
-            MethodTable methodTable,
-            AMethodMember definition,
-            List<TId> params) {
+    private final Instance falseInstance = new BooleanInstance(this, false);
 
-        super(methodTable, params);
-        this.definition = definition;
+    BooleanClassInfo(
+            ClassTable classTable,
+            AClassdef definition) {
+
+        super(classTable, definition);
     }
 
     @Override
-    public String getName() {
+    public Instance newInstance() {
 
-        return this.definition.getId().getText();
+        throw new RuntimeException("invalid instance creation");
     }
 
-    @Override
-    public void execute(
-            InterpreterEngine interpreterEngine) {
+    public Instance getTrue() {
 
-        for (PStm stm : this.definition.getStms()) {
-            interpreterEngine.visit(stm);
-        }
+        return this.trueInstance;
     }
+
+    public Instance getFalse() {
+
+        return this.falseInstance;
+    }
+
 }

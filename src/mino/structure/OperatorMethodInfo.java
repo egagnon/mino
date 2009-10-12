@@ -39,15 +39,17 @@ public class OperatorMethodInfo
         super(methodTable, params);
         this.definition = definition;
         this.operatorToken = operatorToken;
-        
-        if(getName().equals("+")) {
-            if(getParamCount() != 1) {
-                throw new InterpreterException("method + must have a single parameter", operatorToken);
+
+        if (getName().equals("+")) {
+            if (getParamCount() != 1) {
+                throw new InterpreterException(
+                        "method + must have a single parameter", operatorToken);
             }
         }
-        else if(getName().equals("==")) {
-            if(getParamCount() != 1) {
-                throw new InterpreterException("method == must have a single parameter", operatorToken);
+        else if (getName().equals("==")) {
+            if (getParamCount() != 1) {
+                throw new InterpreterException(
+                        "method == must have a single parameter", operatorToken);
             }
         }
         else {
@@ -66,7 +68,7 @@ public class OperatorMethodInfo
     public void execute(
             InterpreterEngine interpreterEngine) {
 
-        for(PStm stm : definition.getStms()) {
+        for (PStm stm : this.definition.getStms()) {
             interpreterEngine.visit(stm);
         }
     }

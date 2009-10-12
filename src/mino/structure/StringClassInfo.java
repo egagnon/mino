@@ -20,34 +20,35 @@ package mino.structure;
 import java.util.*;
 
 import mino.syntax.node.*;
-import mino.walker.*;
 
-public class NormalMethodInfo
-        extends MethodInfo {
+public class StringClassInfo
+        extends ClassInfo {
 
-    private final AMethodMember definition;
+    private final Map<String, Instance> valueMap = new LinkedHashMap<String, Instance>();
 
-    NormalMethodInfo(
-            MethodTable methodTable,
-            AMethodMember definition,
-            List<TId> params) {
+    StringClassInfo(
+            ClassTable classTable,
+            AClassdef definition) {
 
-        super(methodTable, params);
-        this.definition = definition;
+        super(classTable, definition);
     }
 
     @Override
-    public String getName() {
+    public Instance newInstance() {
 
-        return this.definition.getId().getText();
+        throw new RuntimeException("invalid instance creation");
     }
 
-    @Override
-    public void execute(
-            InterpreterEngine interpreterEngine) {
+    public Instance newString(
+            String value) {
 
-        for (PStm stm : this.definition.getStms()) {
-            interpreterEngine.visit(stm);
+        Instance instance = this.valueMap.get(value);
+
+        if (instance == null) {
+            instance = new StringInstance(this, value);
+            this.valueMap.put(value, instance);
         }
+
+        return instance;
     }
 }

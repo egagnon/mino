@@ -19,15 +19,23 @@ package mino.structure;
 
 import java.util.*;
 
+import mino.exception.*;
 import mino.syntax.node.*;
 import mino.walker.*;
 
 public class PrimitiveOperatorMethodInfo
         extends MethodInfo {
 
+    private static enum Operation {
+        INTEGER_PLUS,
+        STRING_PLUS;
+    }
+
     private final APrimitiveOperatorMember definition;
 
     private final Token operatorToken;
+
+    private final Operation operation;
 
     PrimitiveOperatorMethodInfo(
             MethodTable methodTable,
@@ -38,6 +46,41 @@ public class PrimitiveOperatorMethodInfo
         super(methodTable, params);
         this.definition = definition;
         this.operatorToken = operatorToken;
+
+        if (getName().equals("+")) {
+            if (getParamCount() != 1) {
+                throw new InterpreterException(
+                        "method + must have a single parameter", operatorToken);
+            }
+
+            String className = methodTable.getClassInfo().getName();
+            if (className.equals("Integer")) {
+                this.operation = Operation.INTEGER_PLUS;
+            }
+            else if (className.equals("String")) {
+                this.operation = Operation.STRING_PLUS;
+            }
+            else {
+                throw new InterpreterException(
+                        "method + is not primitive in class " + className,
+                        operatorToken);
+            }
+        }
+        else if (getName().equals("==")) {
+            if (getParamCount() != 1) {
+                throw new InterpreterException(
+                        "method == must have a single parameter", operatorToken);
+            }
+
+            String className = methodTable.getClassInfo().getName();
+            throw new InterpreterException(
+                    "method == is not primitive in class " + className,
+                    operatorToken);
+        }
+        else {
+            // if this point is reached, there's a bug
+            throw new RuntimeException("Unhandled operator " + getName());
+        }
     }
 
     @Override
@@ -50,7 +93,15 @@ public class PrimitiveOperatorMethodInfo
     public void execute(
             InterpreterEngine interpreterEngine) {
 
-        // TODO Auto-generated method stub
-
+        switch (this.operation) {
+        case INTEGER_PLUS:
+            interpreterEngine.integerPlus(this);
+            break;
+        case STRING_PLUS:
+            interpreterEngine.stringPlus(this);
+            break;
+        default:
+            throw new RuntimeException("unhandled case");
+        }
     }
 }

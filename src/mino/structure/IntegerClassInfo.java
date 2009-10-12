@@ -17,37 +17,39 @@
 
 package mino.structure;
 
+import java.math.*;
 import java.util.*;
 
 import mino.syntax.node.*;
-import mino.walker.*;
 
-public class NormalMethodInfo
-        extends MethodInfo {
+public class IntegerClassInfo
+        extends ClassInfo {
 
-    private final AMethodMember definition;
+    private final Map<BigInteger, Instance> valueMap = new LinkedHashMap<BigInteger, Instance>();
 
-    NormalMethodInfo(
-            MethodTable methodTable,
-            AMethodMember definition,
-            List<TId> params) {
+    IntegerClassInfo(
+            ClassTable classTable,
+            AClassdef definition) {
 
-        super(methodTable, params);
-        this.definition = definition;
+        super(classTable, definition);
     }
 
     @Override
-    public String getName() {
+    public Instance newInstance() {
 
-        return this.definition.getId().getText();
+        throw new RuntimeException("invalid instance creation");
     }
 
-    @Override
-    public void execute(
-            InterpreterEngine interpreterEngine) {
+    public Instance newInteger(
+            BigInteger value) {
 
-        for (PStm stm : this.definition.getStms()) {
-            interpreterEngine.visit(stm);
+        Instance instance = this.valueMap.get(value);
+
+        if (instance == null) {
+            instance = new IntegerInstance(this, value);
+            this.valueMap.put(value, instance);
         }
+
+        return instance;
     }
 }

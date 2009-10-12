@@ -17,37 +17,23 @@
 
 package mino.structure;
 
-import java.util.*;
+import java.math.*;
 
-import mino.syntax.node.*;
-import mino.walker.*;
+public class IntegerInstance
+        extends Instance {
 
-public class NormalMethodInfo
-        extends MethodInfo {
+    private final BigInteger value;
 
-    private final AMethodMember definition;
+    public IntegerInstance(
+            ClassInfo classInfo,
+            BigInteger value) {
 
-    NormalMethodInfo(
-            MethodTable methodTable,
-            AMethodMember definition,
-            List<TId> params) {
-
-        super(methodTable, params);
-        this.definition = definition;
+        super(classInfo);
+        this.value = value;
     }
 
-    @Override
-    public String getName() {
+    public BigInteger getValue() {
 
-        return this.definition.getId().getText();
-    }
-
-    @Override
-    public void execute(
-            InterpreterEngine interpreterEngine) {
-
-        for (PStm stm : this.definition.getStms()) {
-            interpreterEngine.visit(stm);
-        }
+        return this.value;
     }
 }

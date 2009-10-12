@@ -60,4 +60,16 @@ public class Instance {
 
         return this.classInfo;
     }
+
+    public Instance getField(
+            TFieldName fieldName) {
+
+        String name = fieldName.getText();
+        if (!this.fieldNameToValueMap.containsKey(name)) {
+            throw new InterpreterException("class " + this.classInfo.getName()
+                    + " has no " + name + " field", fieldName);
+        }
+
+        return this.fieldNameToValueMap.get(name);
+    }
 }

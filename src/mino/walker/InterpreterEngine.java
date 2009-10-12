@@ -17,6 +17,7 @@
 
 package mino.walker;
 
+import java.math.*;
 import java.util.*;
 
 import mino.exception.*;
@@ -37,21 +38,21 @@ public class InterpreterEngine
 
     private Token operatorToken;
 
+    private List<PExp> expList;
+
     private Instance expEval;
 
     private Frame currentFrame;
 
     private ClassInfo objectClassInfo;
 
-    private ClassInfo booleanClassInfo;
+    private BooleanClassInfo booleanClassInfo;
 
-    private ClassInfo integerClassInfo;
+    private IntegerClassInfo integerClassInfo;
 
-    private ClassInfo stringClassInfo;
+    private StringClassInfo stringClassInfo;
 
-    private Instance falseInstance;
-
-    private Instance trueInstance;
+    private Token errorToken;
 
     public void visit(
             Node node) {
@@ -110,6 +111,37 @@ public class InterpreterEngine
         return expEval;
     }
 
+    private List<PExp> getExpList(
+            PExpList node) {
+
+        if (node != null) {
+            this.expList = new LinkedList<PExp>();
+            visit(node);
+            List<PExp> expList = this.expList;
+            this.expList = null;
+            return expList;
+        }
+
+        return new LinkedList<PExp>();
+    }
+
+    private Instance execute(
+            MethodInfo invokedMethod,
+            Frame frame) {
+
+        this.currentFrame = frame;
+        try {
+            invokedMethod.execute(this);
+        }
+        catch (ReturnException e) {
+        }
+        finally {
+            this.currentFrame = frame.getPreviousFrame();
+        }
+
+        return frame.getReturnValue();
+    }
+
     @Override
     public void inStart(
             Start node) {
@@ -133,22 +165,22 @@ public class InterpreterEngine
                     this.eofToken);
         }
 
-        this.booleanClassInfo = this.classTable.getBooleanClassInfoOrNull();
+        this.booleanClassInfo = (BooleanClassInfo) this.classTable
+                .getBooleanClassInfoOrNull();
         if (this.objectClassInfo == null) {
             throw new InterpreterException("class Boolean was not defined",
                     this.eofToken);
         }
 
-        this.falseInstance = this.booleanClassInfo.newInstance();
-        this.trueInstance = this.booleanClassInfo.newInstance();
-
-        this.integerClassInfo = this.classTable.getIntegerClassInfoOrNull();
+        this.integerClassInfo = (IntegerClassInfo) this.classTable
+                .getIntegerClassInfoOrNull();
         if (this.objectClassInfo == null) {
             throw new InterpreterException("class Integer was not defined",
                     this.eofToken);
         }
 
-        this.stringClassInfo = this.classTable.getStringClassInfoOrNull();
+        this.stringClassInfo = (StringClassInfo) this.classTable
+                .getStringClassInfoOrNull();
         if (this.objectClassInfo == null) {
             throw new InterpreterException("class String was not defined",
                     this.eofToken);
@@ -282,7 +314,7 @@ public class InterpreterEngine
                         node.getLPar());
             }
 
-            if (value == this.falseInstance) {
+            if (value == this.booleanClassInfo.getFalse()) {
                 break;
             }
 
@@ -307,7 +339,7 @@ public class InterpreterEngine
                     .getLPar());
         }
 
-        if (value == this.trueInstance) {
+        if (value == this.booleanClassInfo.getTrue()) {
             // execute then statements
             for (PStm stm : node.getStms()) {
                 visit(stm);
@@ -357,10 +389,10 @@ public class InterpreterEngine
         Instance left = getExpEval(node.getExp());
         Instance right = getExpEval(node.getAddExp());
         if (left == right) {
-            this.expEval = this.trueInstance;
+            this.expEval = this.booleanClassInfo.getTrue();
         }
         else {
-            this.expEval = this.falseInstance;
+            this.expEval = this.booleanClassInfo.getFalse();
         }
     }
 
@@ -372,10 +404,10 @@ public class InterpreterEngine
         Instance right = getExpEval(node.getAddExp());
         if (left == null || right == null) {
             if (left == right) {
-                this.expEval = this.trueInstance;
+                this.expEval = this.booleanClassInfo.getTrue();
             }
             else {
-                this.expEval = this.falseInstance;
+                this.expEval = this.booleanClassInfo.getTrue();
             }
         }
         else {
@@ -383,23 +415,296 @@ public class InterpreterEngine
                     .getMethodInfo(node.getEq());
             Frame frame = new Frame(this.currentFrame, left, invokedMethod);
             frame.setParam(right);
-            this.currentFrame = frame;
-            try {
-                invokedMethod.execute(this);
+            if (invokedMethod instanceof PrimitiveOperatorMethodInfo) {
+                this.errorToken = node.getEq();
+                this.expEval = execute(invokedMethod, frame);
+                this.errorToken = null;
             }
-            catch (ReturnException e) {
-                this.expEval = frame.getReturnValue();
-            }
-            finally {
-                this.currentFrame = frame.getPreviousFrame();
+            else {
+                this.expEval = execute(invokedMethod, frame);
             }
         }
+    }
+
+    @Override
+    public void caseAAddAddExp(
+            AAddAddExp node) {
+
+        Instance left = getExpEval(node.getAddExp());
+        Instance right = getExpEval(node.getLeftUnaryExp());
+        if (left == null) {
+            throw new InterpreterException("left argument of + method is null",
+                    node.getPlus());
+        }
+        else if (right == null) {
+            throw new InterpreterException(
+                    "right argument of + method is null", node.getPlus());
+        }
+        else {
+            MethodInfo invokedMethod = left.getClassInfo().getMethodTable()
+                    .getMethodInfo(node.getPlus());
+            Frame frame = new Frame(this.currentFrame, left, invokedMethod);
+            frame.setParam(right);
+            if (invokedMethod instanceof PrimitiveOperatorMethodInfo) {
+                this.errorToken = node.getPlus();
+                this.expEval = execute(invokedMethod, frame);
+                this.errorToken = null;
+            }
+            else {
+                this.expEval = execute(invokedMethod, frame);
+            }
+        }
+    }
+
+    @Override
+    public void caseANotLeftUnaryExp(
+            ANotLeftUnaryExp node) {
+
+        Instance value = getExpEval(node.getLeftUnaryExp());
+        if (value == null) {
+            throw new InterpreterException("expression is null", node.getNot());
+        }
+
+        if (!value.isa(this.booleanClassInfo)) {
+            throw new InterpreterException("expression is not boolean", node
+                    .getNot());
+        }
+
+        if (value == this.booleanClassInfo.getTrue()) {
+            this.expEval = this.booleanClassInfo.getFalse();
+        }
+        else {
+            this.expEval = this.booleanClassInfo.getTrue();
+        }
+    }
+
+    @Override
+    public void caseANewTerm(
+            ANewTerm node) {
+
+        ClassInfo classInfo = this.classTable.get(node.getClassName());
+
+        String name = classInfo.getName();
+        if (name.equals("Boolean") || name.equals("Integer")
+                || name.equals("String")) {
+            throw new InterpreterException("invalid use of new operator", node
+                    .getNewKwd());
+        }
+
+        this.expEval = classInfo.newInstance();
+    }
+
+    @Override
+    public void caseAFieldTerm(
+            AFieldTerm node) {
+
+        Instance self = this.currentFrame.getReceiver();
+        this.expEval = self.getField(node.getFieldName());
+    }
+
+    @Override
+    public void caseAVarTerm(
+            AVarTerm node) {
+
+        this.expEval = this.currentFrame.getVar(node.getId());
+    }
+
+    @Override
+    public void caseANumTerm(
+            ANumTerm node) {
+
+        this.expEval = this.integerClassInfo.newInteger(new BigInteger(node
+                .getNumber().getText()));
+    }
+
+    @Override
+    public void caseANullTerm(
+            ANullTerm node) {
+
+        this.expEval = null;
+    }
+
+    @Override
+    public void caseASelfTerm(
+            ASelfTerm node) {
+
+        this.expEval = this.currentFrame.getReceiver();
     }
 
     @Override
     public void caseATrueTerm(
             ATrueTerm node) {
 
-        this.expEval = this.trueInstance;
+        this.expEval = this.booleanClassInfo.getTrue();
+    }
+
+    @Override
+    public void caseAFalseTerm(
+            AFalseTerm node) {
+
+        this.expEval = this.booleanClassInfo.getFalse();
+    }
+
+    @Override
+    public void caseAStringTerm(
+            AStringTerm node) {
+
+        String string = node.getString().getText();
+        this.expEval = this.stringClassInfo.newString(string.substring(1,
+                string.length() - 1));
+    }
+
+    @Override
+    public void caseACall(
+            ACall node) {
+
+        List<PExp> expList = getExpList(node.getExpList());
+
+        Instance receiver = getExpEval(node.getRightUnaryExp());
+        if (receiver == null) {
+            throw new InterpreterException("receiver of "
+                    + node.getId().getText() + " method is null", node.getId());
+        }
+
+        MethodInfo invokedMethod = receiver.getClassInfo().getMethodTable()
+                .getMethodInfo(node.getId());
+
+        if (invokedMethod.getParamCount() != expList.size()) {
+            throw new InterpreterException("method " + invokedMethod.getName()
+                    + " expects " + invokedMethod.getParamCount()
+                    + " arguments", node.getId());
+        }
+
+        Frame frame = new Frame(this.currentFrame, receiver, invokedMethod);
+
+        for (PExp exp : expList) {
+            frame.setParam(getExpEval(exp));
+        }
+
+        if (invokedMethod instanceof PrimitiveNormalMethodInfo) {
+            this.errorToken = node.getId();
+            this.expEval = execute(invokedMethod, frame);
+            this.errorToken = null;
+        }
+        else {
+            this.expEval = execute(invokedMethod, frame);
+        }
+    }
+
+    @Override
+    public void caseASelfCall(
+            ASelfCall node) {
+
+        List<PExp> expList = getExpList(node.getExpList());
+
+        Instance receiver = this.currentFrame.getReceiver();
+
+        MethodInfo invokedMethod = receiver.getClassInfo().getMethodTable()
+                .getMethodInfo(node.getId());
+
+        if (invokedMethod.getParamCount() != expList.size()) {
+            throw new InterpreterException("method " + invokedMethod.getName()
+                    + " expects " + invokedMethod.getParamCount()
+                    + " arguments", node.getId());
+        }
+
+        Frame frame = new Frame(this.currentFrame, receiver, invokedMethod);
+
+        for (PExp exp : expList) {
+            frame.setParam(getExpEval(exp));
+        }
+
+        if (invokedMethod instanceof PrimitiveNormalMethodInfo) {
+            this.errorToken = node.getId();
+            this.expEval = execute(invokedMethod, frame);
+            this.errorToken = null;
+        }
+        else {
+            this.expEval = execute(invokedMethod, frame);
+        }
+    }
+
+    @Override
+    public void caseAExpList(
+            AExpList node) {
+
+        this.expList.add(node.getExp());
+        for (PAdditionalExp additionalExp : node.getAdditionalExps()) {
+            visit(additionalExp);
+        }
+    }
+
+    @Override
+    public void caseAAdditionalExp(
+            AAdditionalExp node) {
+
+        this.expList.add(node.getExp());
+    }
+
+    public void integerPlus(
+            MethodInfo methodInfo) {
+
+        IntegerInstance self = (IntegerInstance) this.currentFrame
+                .getReceiver();
+
+        String argName = methodInfo.getParamName(0);
+        Instance arg = this.currentFrame.getVarOrNull(argName);
+        if (!arg.isa(this.integerClassInfo)) {
+            throw new InterpreterException("right argument is not Integer",
+                    this.errorToken);
+        }
+
+        BigInteger left = self.getValue();
+        BigInteger right = ((IntegerInstance) arg).getValue();
+        this.currentFrame.setReturnValue(this.integerClassInfo.newInteger(left
+                .add(right)));
+    }
+
+    public void stringPlus(
+            MethodInfo methodInfo) {
+
+        StringInstance self = (StringInstance) this.currentFrame.getReceiver();
+
+        String argName = methodInfo.getParamName(0);
+        Instance arg = this.currentFrame.getVarOrNull(argName);
+        if (!arg.isa(this.stringClassInfo)) {
+            throw new InterpreterException("right argument is not String",
+                    this.errorToken);
+        }
+
+        String left = self.getValue();
+        String right = ((StringInstance) arg).getValue();
+        this.currentFrame.setReturnValue(this.stringClassInfo.newString(left
+                .concat(right)));
+    }
+
+    public void objectAbort(
+            MethodInfo methodInfo) {
+
+        String argName = methodInfo.getParamName(0);
+        Instance arg = this.currentFrame.getVarOrNull(argName);
+        if (!arg.isa(this.stringClassInfo)) {
+            throw new InterpreterException("abort argument is not String",
+                    this.errorToken);
+        }
+
+        String message = "ABORT: " + ((StringInstance) arg).getValue();
+        throw new InterpreterException(message, this.errorToken);
+    }
+
+    public void integerToS(
+            PrimitiveNormalMethodInfo primitiveNormalMethodInfo) {
+
+        IntegerInstance self = (IntegerInstance) this.currentFrame
+                .getReceiver();
+        this.currentFrame.setReturnValue(this.stringClassInfo.newString(self
+                .getValue().toString()));
+    }
+
+    public void stringToSystemOut(
+            PrimitiveNormalMethodInfo primitiveNormalMethodInfo) {
+
+        StringInstance self = (StringInstance) this.currentFrame.getReceiver();
+        System.out.println(self.getValue());
     }
 }

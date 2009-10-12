@@ -102,14 +102,14 @@ Productions
     {simple} add_exp;
 
   add_exp =
-    {add} add_exp plus left_exp |
-    {simple} left_exp;
+    {add} add_exp plus left_unary_exp |
+    {simple} left_unary_exp;
 
-  left_exp =
-    {not} not left_exp |
-    {simple} right_exp;
+  left_unary_exp =
+    {not} not left_unary_exp |
+    {simple} right_unary_exp;
 
-  right_exp =
+  right_unary_exp =
     {call} call |
     {simple} term;
 
@@ -127,7 +127,7 @@ Productions
     {string} string;
 
   call =
-    right_exp dot id l_par exp_list? r_par;
+    right_unary_exp dot id l_par exp_list? r_par;
 
   self_call =
     id l_par exp_list? r_par;

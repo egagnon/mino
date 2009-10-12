@@ -125,4 +125,9 @@ public class MethodTable {
 
         return methodInfo;
     }
+
+    public ClassInfo getClassInfo() {
+
+        return this.classInfo;
+    }
 }

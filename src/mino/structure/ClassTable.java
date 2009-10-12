@@ -37,7 +37,20 @@ public class ClassTable {
                     + name, nameToken);
         }
 
-        ClassInfo classInfo = new ClassInfo(this, definition);
+        ClassInfo classInfo;
+        if (name.equals("Boolean")) {
+            classInfo = new BooleanClassInfo(this, definition);
+        }
+        else if (name.equals("Integer")) {
+            classInfo = new IntegerClassInfo(this, definition);
+        }
+        else if (name.equals("String")) {
+            classInfo = new StringClassInfo(this, definition);
+        }
+        else {
+            classInfo = new ClassInfo(this, definition);
+        }
+
         this.nameToClassInfoMap.put(name, classInfo);
         return classInfo;
     }

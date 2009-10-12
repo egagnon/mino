@@ -17,37 +17,21 @@
 
 package mino.structure;
 
-import java.util.*;
+public class StringInstance
+        extends Instance {
 
-import mino.syntax.node.*;
-import mino.walker.*;
+    private final String value;
 
-public class NormalMethodInfo
-        extends MethodInfo {
+    public StringInstance(
+            ClassInfo classInfo,
+            String value) {
 
-    private final AMethodMember definition;
-
-    NormalMethodInfo(
-            MethodTable methodTable,
-            AMethodMember definition,
-            List<TId> params) {
-
-        super(methodTable, params);
-        this.definition = definition;
+        super(classInfo);
+        this.value = value;
     }
 
-    @Override
-    public String getName() {
+    public String getValue() {
 
-        return this.definition.getId().getText();
-    }
-
-    @Override
-    public void execute(
-            InterpreterEngine interpreterEngine) {
-
-        for (PStm stm : this.definition.getStms()) {
-            interpreterEngine.visit(stm);
-        }
+        return this.value;
     }
 }
