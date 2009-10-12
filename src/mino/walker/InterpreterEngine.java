@@ -427,6 +427,24 @@ public class InterpreterEngine
     }
 
     @Override
+    public void caseAIsaExp(
+            AIsaExp node) {
+
+        Instance left = getExpEval(node.getExp());
+        ClassInfo right = this.classTable.get(node.getClassName());
+
+        if (left == null) {
+            this.expEval = this.booleanClassInfo.getTrue();
+        }
+        else if (left.isa(right)) {
+            this.expEval = this.booleanClassInfo.getTrue();
+        }
+        else {
+            this.expEval = this.booleanClassInfo.getFalse();
+        }
+    }
+
+    @Override
     public void caseAAddAddExp(
             AAddAddExp node) {
 

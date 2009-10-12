@@ -34,6 +34,7 @@ Tokens
   self_kwd = ;
   null_kwd = ;
   new_kwd = ;
+  isa_kwd = ;
 
   class_name = ;
   field_name = ;
@@ -99,6 +100,7 @@ Productions
   exp =
     {is} exp is_kwd add_exp |
     {eq} exp eq add_exp |
+    {isa} exp isa_kwd class_name |
     {simple} add_exp;
 
   add_exp =

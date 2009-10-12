@@ -61,3 +61,10 @@ class String {
 
 print("Hello world!");
 print("This is the sum of 5 + 7: " + (5 + 7).to_s());
+if(3 isa String) {
+  print("yes");
+}
+else {
+  print("false");
+}
+

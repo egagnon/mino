@@ -34,6 +34,7 @@ Lexer
   self_kwd = 'self';
   null_kwd = 'null';
   new_kwd = 'new';
+  isa_kwd = 'isa';
 
   class_name = upper name_char*;
   field_name = '_' lower name_char*;
@@ -80,6 +81,7 @@ Token
   self_kwd,
   null_kwd,
   new_kwd,
+  isa_kwd,
 
   class_name,
   field_name,
