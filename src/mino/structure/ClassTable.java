@@ -58,4 +58,19 @@ public class ClassTable {
 
         return this.nameToClassInfoMap.get(name);
     }
+
+    public ClassInfo getBooleanClassInfoOrNull() {
+
+        return this.nameToClassInfoMap.get("Boolean");
+    }
+
+    public ClassInfo getIntegerClassInfoOrNull() {
+
+        return this.nameToClassInfoMap.get("Integer");
+    }
+
+    public ClassInfo getStringClassInfoOrNull() {
+
+        return this.nameToClassInfoMap.get("String");
+    }
 }

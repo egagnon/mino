@@ -28,14 +28,15 @@ public class MethodTable {
 
     private final Map<String, MethodInfo> nameToMethodInfoMap = new LinkedHashMap<String, MethodInfo>();
 
-    public MethodTable(
+    MethodTable(
             ClassInfo classInfo) {
 
         this.classInfo = classInfo;
     }
 
     public void add(
-            AMethodMember definition) {
+            AMethodMember definition,
+            List<TId> params) {
 
         Token nameToken = definition.getId();
         String name = nameToken.getText();
@@ -46,11 +47,12 @@ public class MethodTable {
         }
 
         this.nameToMethodInfoMap.put(name, new NormalMethodInfo(this,
-                definition));
+                definition, params));
     }
 
     public void add(
             AOperatorMember definition,
+            List<TId> params,
             Token operatorToken) {
 
         String name = operatorToken.getText();
@@ -61,11 +63,12 @@ public class MethodTable {
         }
 
         this.nameToMethodInfoMap.put(name, new OperatorMethodInfo(this,
-                definition, operatorToken));
+                definition, params, operatorToken));
     }
 
     public void add(
-            APrimitiveMethodMember definition) {
+            APrimitiveMethodMember definition,
+            List<TId> params) {
 
         Token nameToken = definition.getId();
         String name = nameToken.getText();
@@ -76,11 +79,12 @@ public class MethodTable {
         }
 
         this.nameToMethodInfoMap.put(name, new PrimitiveNormalMethodInfo(this,
-                definition));
+                definition, params));
     }
 
     public void add(
             APrimitiveOperatorMember definition,
+            List<TId> params,
             Token operatorToken) {
 
         String name = operatorToken.getText();
@@ -91,13 +95,34 @@ public class MethodTable {
         }
 
         this.nameToMethodInfoMap.put(name, new PrimitiveOperatorMethodInfo(
-                this, definition, operatorToken));
+                this, definition, params, operatorToken));
     }
 
-    public void add(
-            AFile definition) {
+    private MethodInfo getMethodInfoOrNull(
+            String name) {
 
-        this.nameToMethodInfoMap.put("$main", new MainMethodInfo(this,
-                definition));
+        MethodInfo methodInfo = this.nameToMethodInfoMap.get(name);
+        ClassInfo superClassInfo = this.classInfo.getSuperClassInfoOrNull();
+
+        if (methodInfo == null && superClassInfo != null) {
+            methodInfo = superClassInfo.getMethodTable().getMethodInfoOrNull(
+                    name);
+        }
+
+        return methodInfo;
+    }
+
+    public MethodInfo getMethodInfo(
+            Token nameToken) {
+
+        String name = nameToken.getText();
+        MethodInfo methodInfo = getMethodInfoOrNull(name);
+
+        if (methodInfo == null) {
+            throw new InterpreterException("class " + this.classInfo.getName()
+                    + " has no " + name + " method", nameToken);
+        }
+
+        return methodInfo;
     }
 }

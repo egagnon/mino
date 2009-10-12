@@ -30,7 +30,7 @@ public class FieldTable {
 
     private Set<FieldInfo> fields;
 
-    public FieldTable(
+    FieldTable(
             ClassInfo classInfo) {
 
         this.classInfo = classInfo;

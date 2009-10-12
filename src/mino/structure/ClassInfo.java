@@ -61,6 +61,15 @@ public class ClassInfo {
         else {
             // explicit super class
             ASpecial aSpecial = (ASpecial) definition.getSpecial();
+
+            String superClassName = aSpecial.getClassName().getText();
+            if (superClassName.equals("Boolean")
+                    || superClassName.equals("Integer")
+                    || superClassName.equals("String")) {
+                throw new InterpreterException("class " + superClassName
+                        + " cannot be specialized", aSpecial.getClassName());
+            }
+
             this.superClass = classTable.get(aSpecial.getClassName());
         }
     }
@@ -88,5 +97,19 @@ public class ClassInfo {
     public Instance newInstance() {
 
         return new Instance(this);
+    }
+
+    public boolean isa(
+            ClassInfo classInfo) {
+
+        if (this == classInfo) {
+            return true;
+        }
+
+        if (this.superClass != null) {
+            return this.superClass.isa(classInfo);
+        }
+
+        return false;
     }
 }

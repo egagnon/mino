@@ -90,15 +90,9 @@ Productions
     {field_assign} field_name assign exp sc |
     {call} call sc |
     {self_call} self_call sc |
-    {if} if_kwd l_par exp r_par l_br [stms]:stm* r_br else? |
     {while} while_kwd l_par exp r_par l_br [stms]:stm* r_br |
-    {return} return_kwd exp sc;
-
-  exp_list =
-    exp [additional_exps]:additional_exp*;
-
-  additional_exp =
-    comma exp;
+    {if} if_kwd l_par exp r_par l_br [stms]:stm* r_br else? |
+    {return} return_kwd exp? sc;
 
   else =
     else_kwd l_br [stms]:stm* r_br;
@@ -138,3 +132,9 @@ Productions
 
   self_call =
     id l_par exp_list? r_par;
+
+  exp_list =
+    exp [additional_exps]:additional_exp*;
+
+  additional_exp =
+    comma exp;

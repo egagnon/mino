@@ -15,21 +15,9 @@
  * limitations under the License.
  */
 
-package mino.structure;
+package mino.exception;
 
-import mino.syntax.node.*;
-
-public class MainMethodInfo
-        extends MethodInfo {
-
-    private final AFile definition;
-
-    public MainMethodInfo(
-            MethodTable methodTable,
-            AFile definition) {
-
-        super(methodTable);
-        this.definition = definition;
-    }
+public class ReturnException
+        extends RuntimeException {
 
 }

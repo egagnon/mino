@@ -52,12 +52,11 @@ public class MinoInterpreter {
             System.exit(1);
         }
 
+        Node syntaxTree = null;
+
         try {
             // parse
-            Node syntaxTree = new Parser(new Lexer(in)).parse();
-
-            // interpret
-            new InterpreterEngine().visit(syntaxTree);
+            syntaxTree = new Parser(new Lexer(in)).parse();
         }
         catch (IOException e) {
             String inputName;
@@ -84,8 +83,15 @@ public class MinoInterpreter {
                     + ".");
             System.exit(1);
         }
+
+        InterpreterEngine interpreterEngine = new InterpreterEngine();
+        try {
+            // interpret
+            interpreterEngine.visit(syntaxTree);
+        }
         catch (InterpreterException e) {
             System.err.println("INTERPRETER ERROR: " + e.getMessage() + ".");
+            interpreterEngine.printStackTrace();
             System.exit(1);
         }
 

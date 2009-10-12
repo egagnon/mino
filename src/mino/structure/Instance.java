@@ -19,7 +19,8 @@ package mino.structure;
 
 import java.util.*;
 
-import mino.walker.*;
+import mino.exception.*;
+import mino.syntax.node.*;
 
 public class Instance {
 
@@ -27,7 +28,7 @@ public class Instance {
 
     private final Map<String, Instance> fieldNameToValueMap = new LinkedHashMap<String, Instance>();
 
-    public Instance(
+    Instance(
             ClassInfo classInfo) {
 
         this.classInfo = classInfo;
@@ -36,11 +37,27 @@ public class Instance {
         }
     }
 
-    public void invokeMain(
-            InterpreterEngine interpreterEngine) {
+    public void setField(
+            TFieldName fieldName,
+            Instance value) {
 
-        // TODO Auto-generated method stub
+        String name = fieldName.getText();
+        if (!this.fieldNameToValueMap.containsKey(name)) {
+            throw new InterpreterException("class " + this.classInfo.getName()
+                    + " has no " + name + " field", fieldName);
+        }
 
+        this.fieldNameToValueMap.put(name, value);
     }
 
+    public boolean isa(
+            ClassInfo classInfo) {
+
+        return this.classInfo.isa(classInfo);
+    }
+
+    public ClassInfo getClassInfo() {
+
+        return this.classInfo;
+    }
 }

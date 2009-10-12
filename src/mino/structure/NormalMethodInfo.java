@@ -17,18 +17,36 @@
 
 package mino.structure;
 
+import java.util.*;
+
 import mino.syntax.node.*;
+import mino.walker.*;
 
 public class NormalMethodInfo
         extends MethodInfo {
 
     private final AMethodMember definition;
 
-    public NormalMethodInfo(
+    NormalMethodInfo(
             MethodTable methodTable,
-            AMethodMember definition) {
+            AMethodMember definition,
+            List<TId> params) {
 
-        super(methodTable);
+        super(methodTable, params);
         this.definition = definition;
+    }
+
+    @Override
+    public String getName() {
+
+        return this.definition.getId().getText();
+    }
+
+    @Override
+    public void execute(
+            InterpreterEngine interpreterEngine) {
+
+        // TODO Auto-generated method stub
+
     }
 }

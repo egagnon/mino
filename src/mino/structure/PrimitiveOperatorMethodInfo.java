@@ -17,7 +17,10 @@
 
 package mino.structure;
 
+import java.util.*;
+
 import mino.syntax.node.*;
+import mino.walker.*;
 
 public class PrimitiveOperatorMethodInfo
         extends MethodInfo {
@@ -26,14 +29,28 @@ public class PrimitiveOperatorMethodInfo
 
     private final Token operatorToken;
 
-    public PrimitiveOperatorMethodInfo(
+    PrimitiveOperatorMethodInfo(
             MethodTable methodTable,
             APrimitiveOperatorMember definition,
+            List<TId> params,
             Token operatorToken) {
 
-        super(methodTable);
+        super(methodTable, params);
         this.definition = definition;
         this.operatorToken = operatorToken;
     }
 
+    @Override
+    public String getName() {
+
+        return this.operatorToken.getText();
+    }
+
+    @Override
+    public void execute(
+            InterpreterEngine interpreterEngine) {
+
+        // TODO Auto-generated method stub
+
+    }
 }
