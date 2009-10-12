@@ -50,24 +50,23 @@ class Integer {
 
 class String {
 
-  primitive +(s);
-
   fun to_s() {
     return self;
   }
 
+  primitive +(s);
   primitive to_system_out();
 }
 
 class A {
   fun m() {
-    print("A.m()");
+    print("I'm in class A.");
   }
 }
 
 class B {
   fun m() {
-    print("B.m()");
+    print("I'm in class B.");
   }
 }
 
