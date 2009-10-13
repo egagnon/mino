@@ -70,14 +70,34 @@ class B {
   }
 }
 
+class Person {
+  var _name;
+  var _age;
+
+  /* method that plays the role of a constructor */
+  fun init(name, age) {
+    _name = name;
+    _age = age;
+    return self; /* to allow call chains */
+  }
+  
+  fun to_s() {
+    return "name: " + _name + ", age: " + _age.to_s(); 
+  }
+}
+ 
 print("Hello world!");
+
 print("This is the sum of 5 + 7: " + (5 + 7).to_s());
+
 if(3 isa String) {
-  print("yes");
+  print("3 is a String");
 }
 else {
-  print("false");
+  print("3 is not a String");
 }
+
+print(new Person.init("Joe",21));
 
 i = 0;
 while(!(i == 2)) {
@@ -91,4 +111,4 @@ while(!(i == 2)) {
   i = i + 1;
 }
 print(i);
-o.k();
+o.k();  /* error expected */
