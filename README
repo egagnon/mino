@@ -5,3 +5,23 @@ small interpreter and a small compiler for an object language.
 
 The lexer is built using sablecc-4-beta.1 and the parser/AST using
 sablecc-3.2.
+
+HOW TO COMPILE
+==============
+
+In order to compile Mino, you must first compile the grammar files. It
+is important to compile the lexer grammar (sablecc4) last, as it will
+overwrite lexer files generated from the parser grammar (sablecc3).
+
+java -jar path-to-sablecc-3.2/lib/sablecc.jar -d src/ grammar/mino.sablecc3
+java -jar path-to-sablecc-4-beta.1/lib/sablecc.jar -t sablecc3 -d src/ -p mino.syntax grammar/mino.sablecc
+
+Once this is done, you can compile the java files, in the src/
+directory, as you would normally.
+
+An Eclipse project file has been included so that you can easily
+import the project into Eclipse and compile it there.
+
+On Windows, replace all the "/" above by "\".
+
+Have fun!
