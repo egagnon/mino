@@ -47,8 +47,8 @@ public class PrimitiveNormalMethodInfo
         String className = methodTable.getClassInfo().getName();
         if (className.equals("Object") && getName().equals("abort")) {
             if (params.size() != 1) {
-                throw new InterpreterException("abort method has one parameter",
-                        definition.getId());
+                throw new InterpreterException(
+                        "abort method has one parameter", definition.getId());
             }
             this.operation = Operation.OBJECT_ABORT;
         }
