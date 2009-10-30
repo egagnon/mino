@@ -171,21 +171,21 @@ public class InterpreterEngine
 
         this.booleanClassInfo = (BooleanClassInfo) this.classTable
                 .getBooleanClassInfoOrNull();
-        if (this.objectClassInfo == null) {
+        if (this.booleanClassInfo == null) {
             throw new InterpreterException("class Boolean was not defined",
                     this.eofToken);
         }
 
         this.integerClassInfo = (IntegerClassInfo) this.classTable
                 .getIntegerClassInfoOrNull();
-        if (this.objectClassInfo == null) {
+        if (this.integerClassInfo == null) {
             throw new InterpreterException("class Integer was not defined",
                     this.eofToken);
         }
 
         this.stringClassInfo = (StringClassInfo) this.classTable
                 .getStringClassInfoOrNull();
-        if (this.objectClassInfo == null) {
+        if (this.stringClassInfo == null) {
             throw new InterpreterException("class String was not defined",
                     this.eofToken);
         }
