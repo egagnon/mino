@@ -30,12 +30,18 @@ class Object {
   }
 
   primitive abort(message);
+
+  fun assert(cond,message) {
+    if (cond == false) {
+      abort("assertion failed: " + message);
+    }
+  }
 }
 
 class Boolean {
 
   fun to_s() {
-    if(self == true) {
+    if(self is true) {
       return "true";
     }
     return "false";
@@ -76,26 +82,22 @@ class Person {
 
   /* method that plays the role of a constructor */
   fun init(name, age) {
+    assert(!(name is null), "name must not be null");
+    assert(name isa String, "name must be a String");
+    assert(!(age is null), "age must not be null");
+    assert(age isa Integer, "age must be an Integer");
     _name = name;
     _age = age;
-    return self; /* to allow call chains */
+    return self; /* to allow call chaining */
   }
-  
+
   fun to_s() {
-    return "name: " + _name + ", age: " + _age.to_s(); 
+    return "name: " + _name + ", age: " + _age.to_s();
   }
 }
- 
-print("Hello world!");
 
-print("This is the sum of 5 + 7: " + (5 + 7).to_s());
+print("HELLO world.");
 
-if(3 isa String) {
-  print("3 is a String");
-}
-else {
-  print("3 is not a String");
-}
 
 print(new Person.init("Joe",21));
 
@@ -111,4 +113,4 @@ while(!(i == 2)) {
   i = i + 1;
 }
 print(i);
-o.k();  /* error expected */
+o.k(); /* runtime error expected */
