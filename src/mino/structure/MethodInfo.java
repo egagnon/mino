@@ -61,4 +61,9 @@ public abstract class MethodInfo {
 
     public abstract void execute(
             InterpreterEngine interpreterEngine);
+
+    public ClassInfo getClassInfo() {
+
+        return this.methodTable.getClassInfo();
+    }
 }

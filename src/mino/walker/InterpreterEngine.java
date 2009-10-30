@@ -71,7 +71,7 @@ public class InterpreterEngine
             MethodInfo invokedMethod = frame.getInvokedMethod();
             if (invokedMethod != null) {
                 System.err.println(" in "
-                        + frame.getReceiver().getClassInfo().getName() + "."
+                        + invokedMethod.getClassInfo().getName() + "."
                         + invokedMethod.getName() + "()" + location);
             }
             else {
