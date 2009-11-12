@@ -19,26 +19,10 @@ Language mino;
 
 Lexer
 
-  class_kwd = 'class';
-  var_kwd = 'var';
-  fun_kwd = 'fun';
-  primitive_kwd = 'primitive';
-  if_kwd = 'if';
-  while_kwd = 'while';
-  true_kwd = 'true';
-  false_kwd = 'false';
-  special_kwd = 'special';
-  else_kwd = 'else';
-  is_kwd = 'is';
-  return_kwd = 'return';
-  self_kwd = 'self';
-  null_kwd = 'null';
-  new_kwd = 'new';
-  isa_kwd = 'isa';
-
+  id = lower name_char*;
   class_name = upper name_char*;
   field_name = '_' lower name_char*;
-  id = lower name_char*;
+  invalid_id = ('_' | lower | upper)+;
 
   name_char = upper | lower | '_';
   upper = 'A'..'Z';
@@ -49,60 +33,124 @@ Lexer
   string = Shortest '"' string_char* '"';
   string_char = Any - (#10 | #13);
 
-  plus = '+';
-  eq = '==';
-  not = '!';
-  assign = '=';
-  dot = '.';
-
-  l_br = '{';
-  r_br = '}';
-  l_par = '(';
-  r_par = ')';
-  sc = ';';
-  comma = ',';
-
   blank = ' ' | #13 | #10 | #9;
   comment = Shortest '/*' Any* '*/';
 
-Token
-  class_kwd,
-  var_kwd,
-  fun_kwd,
-  primitive_kwd,
-  if_kwd,
-  while_kwd,
-  true_kwd,
-  false_kwd,
-  special_kwd,
-  else_kwd,
-  is_kwd,
-  return_kwd,
-  self_kwd,
-  null_kwd,
-  new_kwd,
-  isa_kwd,
+  Token
+    invalid_id;
 
-  class_name,
-  field_name,
-  id,
+  Ignored
+    blank, comment;
 
-  number,
+Parser
 
-  string,
+  file =
+    classdefs stms;
 
-  plus,
-  eq,
-  not,
-  assign,
-  dot,
+  classdefs =
+    classdefs classdef | ;
 
-  l_br,
-  r_br,
-  l_par,
-  r_par,
-  sc,
-  comma;
+  stms =
+    stms stm | ;
 
-Ignored
-  blank, comment;
+  classdef =
+    'class' class_name special_opt '{' members '}';
+
+  special_opt =
+    special | ;
+
+  members =
+    members member | ;
+
+  special =
+    'special' class_name;
+
+  member =
+    {field:} 'var' field_name ';' |
+    {method:} 'fun' id '(' id_list_opt ')' '{' stms '}' |
+    {operator:} 'fun' operator '(' id_list_opt ')' '{' stms '}' |
+    {primitive_method:} 'primitive' id '(' id_list_opt ')' ';' |
+    {primitive_operator:} 'primitive' operator '(' id_list_opt ')' ';';
+
+  id_list_opt =
+    id_list | ;
+
+  id_list =
+    id additional_ids;
+
+  additional_ids =
+    additional_ids additional_id | ;
+
+  additional_id =
+    ',' id;
+
+  operator =
+    {plus:} '+' |
+    {eq:} '==';
+
+  stm =
+    {var_assign:} id '=' exp ';' |
+    {field_assign:} field_name '=' exp ';' |
+    {call:} call ';' |
+    {self_call:} self_call ';' |
+    {while:} 'while' '(' exp ')' '{' stms '}' |
+    {if:} 'if' '(' exp ')' '{' stms '}' else_opt |
+    {return:} 'return' exp_opt ';';
+
+  exp_opt =
+    exp | ;
+
+  else_opt =
+    else | ;
+
+  else =
+    'else' '{' stms '}';
+
+  exp =
+    {is:} exp 'is' add_exp |
+    {eq:} exp '==' add_exp |
+    {isa:} exp 'isa' class_name |
+    {simple:} add_exp;
+
+  add_exp =
+    {add:} add_exp '+' left_unary_exp |
+    {simple:} left_unary_exp;
+
+  left_unary_exp =
+    {not:} '!' left_unary_exp |
+    {simple:} right_unary_exp;
+
+  right_unary_exp =
+    {call:} call |
+    {simple:} term;
+
+  term =
+    {self_call:} self_call |
+    {par:} '(' exp ')' |
+    {new:} 'new' class_name |
+    {field:} field_name |
+    {var:} id |
+    {num:} number |
+    {null:} 'null' |
+    {self:} 'self' |
+    {true:} 'true' |
+    {false:} 'false' |
+    {string:} string;
+
+  call =
+    right_unary_exp '.' id '(' exp_list_opt ')';
+
+  exp_list_opt =
+    exp_list | ;
+
+  self_call =
+    id '(' exp_list_opt ')';
+
+  exp_list =
+    exp additional_exps;
+
+  additional_exps =
+    additional_exps additional_exp | ;
+
+  additional_exp =
+    ',' exp;
