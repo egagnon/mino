@@ -22,11 +22,10 @@ import java.util.*;
 
 import mino.exception.*;
 import mino.structure.*;
-import mino.syntax.analysis.*;
-import mino.syntax.node.*;
+import mino.language_mino.*;
 
 public class InterpreterEngine
-        extends DepthFirstAdapter {
+        extends Walker {
 
     private final ClassTable classTable = new ClassTable();
 

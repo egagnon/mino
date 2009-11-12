@@ -20,9 +20,7 @@ package mino;
 import java.io.*;
 
 import mino.exception.*;
-import mino.syntax.lexer.*;
-import mino.syntax.node.*;
-import mino.syntax.parser.*;
+import mino.language_mino.*;
 import mino.walker.*;
 
 public class MinoInterpreter {
@@ -56,7 +54,7 @@ public class MinoInterpreter {
 
         try {
             // parse
-            syntaxTree = new Parser(new Lexer(in)).parse();
+            syntaxTree = new Parser(in).parse();
         }
         catch (IOException e) {
             String inputName;
