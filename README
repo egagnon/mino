@@ -3,18 +3,14 @@ Mino is a minimal object language.
 The purpose of this project is to illustrate the construction of a
 small interpreter and a small compiler for an object language.
 
-The lexer is built using sablecc-4-beta.x and the parser/AST using
-sablecc-3.2.
+The lexer and parser are built using sablecc-4-beta.2.
 
 HOW TO COMPILE
 ==============
 
-In order to compile Mino, you must first compile the grammar files. It
-is important to compile the lexer grammar (sablecc4) last, as it will
-overwrite lexer files generated from the parser grammar (sablecc3).
+In order to compile Mino, you must first compile the grammar files.
 
-java -jar path-to-sablecc-3.2/lib/sablecc.jar -d src/ grammar/mino.sablecc3
-java -jar path-to-sablecc-4-beta.x/lib/sablecc.jar -t sablecc3 -d src/ -p mino.syntax grammar/mino.sablecc
+java -jar path-to-sablecc-4-beta.2/lib/sablecc.jar -d src -p mino grammar/mino.sablecc
 
 Once this is done, you can compile the java files, in the src/
 directory, as you would normally.
