@@ -20,16 +20,16 @@ package mino.structure;
 import java.util.*;
 
 import mino.exception.*;
-import mino.syntax.node.*;
+import mino.language_mino.*;
 
 public class ClassTable {
 
     private final Map<String, ClassInfo> nameToClassInfoMap = new LinkedHashMap<String, ClassInfo>();
 
     public ClassInfo add(
-            AClassdef definition) {
+            NClassdef definition) {
 
-        Token nameToken = definition.getClassName();
+        Token nameToken = definition.get_ClassName();
         String name = nameToken.getText();
 
         if (this.nameToClassInfoMap.containsKey(name)) {
@@ -61,7 +61,7 @@ public class ClassTable {
     }
 
     public ClassInfo get(
-            TClassName classNameToken) {
+            NClassName classNameToken) {
 
         String name = classNameToken.getText();
         if (!this.nameToClassInfoMap.containsKey(name)) {

@@ -19,7 +19,7 @@ package mino.structure;
 
 import java.util.*;
 
-import mino.syntax.node.*;
+import mino.language_mino.*;
 
 public class StringClassInfo
         extends ClassInfo {
@@ -28,7 +28,7 @@ public class StringClassInfo
 
     StringClassInfo(
             ClassTable classTable,
-            AClassdef definition) {
+            NClassdef definition) {
 
         super(classTable, definition);
     }

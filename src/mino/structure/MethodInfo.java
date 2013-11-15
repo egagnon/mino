@@ -20,7 +20,7 @@ package mino.structure;
 import java.util.*;
 
 import mino.exception.*;
-import mino.syntax.node.*;
+import mino.language_mino.*;
 import mino.walker.*;
 
 public abstract class MethodInfo {
@@ -31,12 +31,12 @@ public abstract class MethodInfo {
 
     MethodInfo(
             MethodTable methodTable,
-            List<TId> params) {
+            List<NId> params) {
 
         this.methodTable = methodTable;
 
         Set<String> paramNameSet = new LinkedHashSet<String>();
-        for (TId id : params) {
+        for (NId id : params) {
             String name = id.getText();
             if (paramNameSet.contains(name)) {
                 throw new InterpreterException("duplicate parameter " + name,

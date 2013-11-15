@@ -69,16 +69,11 @@ public class MinoInterpreter {
             System.exit(1);
         }
         catch (ParserException e) {
-            Token token = e.getToken();
-            System.err.println("SYNTAX ERROR: unexpected '" + token.getText()
-                    + "' at line " + token.getLine() + " position "
-                    + token.getPos() + ".");
+            System.err.println("SYNTAX ERROR: " + e.getMessage() + ".");
             System.exit(1);
         }
         catch (LexerException e) {
-            System.err.println("LEXICAL ERROR: unexpected '" + e.getChar()
-                    + "' at line " + e.getLine() + " position " + e.getPos()
-                    + ".");
+            System.err.println("LEXICAL ERROR: " + e.getMessage() + ".");
             System.exit(1);
         }
 

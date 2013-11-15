@@ -21,8 +21,8 @@ import java.math.*;
 import java.util.*;
 
 import mino.exception.*;
-import mino.structure.*;
 import mino.language_mino.*;
+import mino.structure.*;
 
 public class InterpreterEngine
         extends Walker {
@@ -31,13 +31,11 @@ public class InterpreterEngine
 
     private ClassInfo currentClassInfo;
 
-    private EOF eofToken;
-
-    private List<TId> idList;
+    private List<NId> idList;
 
     private Token operatorToken;
 
-    private List<PExp> expList;
+    private List<NExp> expList;
 
     private Instance expEval;
 
@@ -81,22 +79,18 @@ public class InterpreterEngine
         }
     }
 
-    private List<TId> getParams(
-            PIdList node) {
+    private List<NId> getParams(
+            NIdListOpt node) {
 
-        if (node != null) {
-            this.idList = new LinkedList<TId>();
-            visit(node);
-            List<TId> idList = this.idList;
-            this.idList = null;
-            return idList;
-        }
-
-        return new LinkedList<TId>();
+        this.idList = new LinkedList<NId>();
+        visit(node);
+        List<NId> idList = this.idList;
+        this.idList = null;
+        return idList;
     }
 
     private Token getOperatorToken(
-            POperator node) {
+            NOperator node) {
 
         visit(node);
         Token operatorToken = this.operatorToken;
@@ -113,18 +107,14 @@ public class InterpreterEngine
         return expEval;
     }
 
-    private List<PExp> getExpList(
-            PExpList node) {
+    private List<NExp> getExpList(
+            NExpListOpt node) {
 
-        if (node != null) {
-            this.expList = new LinkedList<PExp>();
-            visit(node);
-            List<PExp> expList = this.expList;
-            this.expList = null;
-            return expList;
-        }
-
-        return new LinkedList<PExp>();
+        this.expList = new LinkedList<NExp>();
+        visit(node);
+        List<NExp> expList = this.expList;
+        this.expList = null;
+        return expList;
     }
 
     private Instance execute(
@@ -146,47 +136,36 @@ public class InterpreterEngine
     }
 
     @Override
-    public void inStart(
-            Start node) {
-
-        this.eofToken = node.getEOF();
-    }
-
-    @Override
-    public void caseAFile(
-            AFile node) {
+    public void caseFile(
+            NFile node) {
 
         // collect class, field and method definitions
-        for (PClassdef classdef : node.getClassdefs()) {
-            visit(classdef);
-        }
+        visit(node.get_Classdefs());
 
         // handle compiler-known classes
         this.objectClassInfo = this.classTable.getObjectClassInfoOrNull();
         if (this.objectClassInfo == null) {
-            throw new InterpreterException("class Object is not defined",
-                    this.eofToken);
+            throw new InterpreterException("class Object is not defined", null);
         }
 
         this.booleanClassInfo = (BooleanClassInfo) this.classTable
                 .getBooleanClassInfoOrNull();
         if (this.booleanClassInfo == null) {
             throw new InterpreterException("class Boolean was not defined",
-                    this.eofToken);
+                    null);
         }
 
         this.integerClassInfo = (IntegerClassInfo) this.classTable
                 .getIntegerClassInfoOrNull();
         if (this.integerClassInfo == null) {
             throw new InterpreterException("class Integer was not defined",
-                    this.eofToken);
+                    null);
         }
 
         this.stringClassInfo = (StringClassInfo) this.classTable
                 .getStringClassInfoOrNull();
         if (this.stringClassInfo == null) {
-            throw new InterpreterException("class String was not defined",
-                    this.eofToken);
+            throw new InterpreterException("class String was not defined", null);
         }
 
         // create initial Object instance
@@ -196,125 +175,123 @@ public class InterpreterEngine
         this.currentFrame = new Frame(null, instance, null);
 
         // execute statements
-        for (PStm stm : node.getStms()) {
-            visit(stm);
-        }
+        visit(node.get_Stms());
     }
 
     @Override
-    public void inAClassdef(
-            AClassdef node) {
+    public void inClassdef(
+            NClassdef node) {
 
         this.currentClassInfo = this.classTable.add(node);
     }
 
     @Override
-    public void outAClassdef(
-            AClassdef node) {
+    public void outClassdef(
+            NClassdef node) {
 
         this.currentClassInfo = null;
     }
 
     @Override
-    public void caseAFieldMember(
-            AFieldMember node) {
+    public void caseMember_Field(
+            NMember_Field node) {
 
         this.currentClassInfo.getFieldTable().add(node);
     }
 
     @Override
-    public void caseAMethodMember(
-            AMethodMember node) {
+    public void caseMember_Method(
+            NMember_Method node) {
 
-        List<TId> params = getParams(node.getIdList());
+        List<NId> params = getParams(node.get_IdListOpt());
         this.currentClassInfo.getMethodTable().add(node, params);
     }
 
     @Override
-    public void caseAOperatorMember(
-            AOperatorMember node) {
+    public void caseMember_Operator(
+            NMember_Operator node) {
 
-        List<TId> params = getParams(node.getIdList());
-        Token operatorToken = getOperatorToken(node.getOperator());
+        List<NId> params = getParams(node.get_IdListOpt());
+        Token operatorToken = getOperatorToken(node.get_Operator());
         this.currentClassInfo.getMethodTable().add(node, params, operatorToken);
     }
 
     @Override
-    public void caseAPrimitiveMethodMember(
-            APrimitiveMethodMember node) {
+    public void caseMember_PrimitiveMethod(
+            NMember_PrimitiveMethod node) {
 
-        List<TId> params = getParams(node.getIdList());
+        List<NId> params = getParams(node.get_IdListOpt());
         this.currentClassInfo.getMethodTable().add(node, params);
     }
 
     @Override
-    public void caseAPrimitiveOperatorMember(
-            APrimitiveOperatorMember node) {
+    public void caseMember_PrimitiveOperator(
+            NMember_PrimitiveOperator node) {
 
-        List<TId> params = getParams(node.getIdList());
-        Token operatorToken = getOperatorToken(node.getOperator());
+        List<NId> params = getParams(node.get_IdListOpt());
+        Token operatorToken = getOperatorToken(node.get_Operator());
         this.currentClassInfo.getMethodTable().add(node, params, operatorToken);
     }
 
     @Override
-    public void inAIdList(
-            AIdList node) {
+    public void inIdList(
+            NIdList node) {
 
-        this.idList.add(node.getId());
+        this.idList.add(node.get_Id());
     }
 
     @Override
-    public void caseAAdditionalId(
-            AAdditionalId node) {
+    public void caseAdditionalId(
+            NAdditionalId node) {
 
-        this.idList.add(node.getId());
+        this.idList.add(node.get_Id());
     }
 
     @Override
-    public void caseAPlusOperator(
-            APlusOperator node) {
+    public void caseOperator_Plus(
+            NOperator_Plus node) {
 
-        this.operatorToken = node.getPlus();
+        this.operatorToken = node.get_Plus();
     }
 
     @Override
-    public void caseAEqOperator(
-            AEqOperator node) {
+    public void caseOperator_Eq(
+            NOperator_Eq node) {
 
-        this.operatorToken = node.getEq();
+        this.operatorToken = node.get_Eq();
     }
 
     @Override
-    public void caseAVarAssignStm(
-            AVarAssignStm node) {
+    public void caseStm_VarAssign(
+            NStm_VarAssign node) {
 
-        Instance value = getExpEval(node.getExp());
-        this.currentFrame.setVar(node.getId(), value);
+        Instance value = getExpEval(node.get_Exp());
+        this.currentFrame.setVar(node.get_Id(), value);
     }
 
     @Override
-    public void caseAFieldAssignStm(
-            AFieldAssignStm node) {
+    public void caseStm_FieldAssign(
+            NStm_FieldAssign node) {
 
-        Instance value = getExpEval(node.getExp());
+        Instance value = getExpEval(node.get_Exp());
         Instance self = this.currentFrame.getReceiver();
-        self.setField(node.getFieldName(), value);
+        self.setField(node.get_FieldName(), value);
     }
 
     @Override
-    public void caseAWhileStm(
-            AWhileStm node) {
+    public void caseStm_While(
+            NStm_While node) {
 
         while (true) {
-            Instance value = getExpEval(node.getExp());
+            Instance value = getExpEval(node.get_Exp());
             if (value == null) {
-                throw new InterpreterException("expression is null", node
-                        .getLPar());
+                throw new InterpreterException("expression is null",
+                        node.get_LPar());
             }
 
             if (!value.isa(this.booleanClassInfo)) {
                 throw new InterpreterException("expression is not boolean",
-                        node.getLPar());
+                        node.get_LPar());
             }
 
             if (value == this.booleanClassInfo.getFalse()) {
@@ -322,49 +299,47 @@ public class InterpreterEngine
             }
 
             // execute statements
-            for (PStm stm : node.getStms()) {
-                visit(stm);
-            }
+            visit(node.get_Stms());
         }
     }
 
     @Override
-    public void caseAIfStm(
-            AIfStm node) {
+    public void caseStm_If(
+            NStm_If node) {
 
-        Instance value = getExpEval(node.getExp());
+        Instance value = getExpEval(node.get_Exp());
         if (value == null) {
-            throw new InterpreterException("expression is null", node.getLPar());
+            throw new InterpreterException("expression is null",
+                    node.get_LPar());
         }
 
         if (!value.isa(this.booleanClassInfo)) {
-            throw new InterpreterException("expression is not boolean", node
-                    .getLPar());
+            throw new InterpreterException("expression is not boolean",
+                    node.get_LPar());
         }
 
         if (value == this.booleanClassInfo.getTrue()) {
             // execute then statements
-            for (PStm stm : node.getStms()) {
-                visit(stm);
-            }
+            visit(node.get_Stms());
         }
-        else if (node.getElse() != null) {
-            visit(node.getElse());
+        else {
+            visit(node.get_ElseOpt());
         }
     }
 
     @Override
-    public void caseAReturnStm(
-            AReturnStm node) {
+    public void caseStm_Return(
+            NStm_Return node) {
 
         if (this.currentFrame.getInvokedMethod() == null) {
             throw new InterpreterException(
-                    "return statement is not allowed in main program", node
-                            .getReturnKwd());
+                    "return statement is not allowed in main program",
+                    node.get_ReturnKwd());
         }
 
-        if (node.getExp() != null) {
-            Instance value = getExpEval(node.getExp());
+        if (node.get_ExpOpt() instanceof NExpOpt_One) {
+            NExp exp = ((NExpOpt_One) node.get_ExpOpt()).get_Exp();
+            Instance value = getExpEval(exp);
             this.currentFrame.setReturnValue(value);
         }
 
@@ -372,25 +347,25 @@ public class InterpreterEngine
     }
 
     @Override
-    public void caseACallStm(
-            ACallStm node) {
+    public void caseStm_Call(
+            NStm_Call node) {
 
-        getExpEval(node.getCall());
+        getExpEval(node.get_Call());
     }
 
     @Override
-    public void caseASelfCallStm(
-            ASelfCallStm node) {
+    public void caseStm_SelfCall(
+            NStm_SelfCall node) {
 
-        getExpEval(node.getSelfCall());
+        getExpEval(node.get_SelfCall());
     }
 
     @Override
-    public void caseAIsExp(
-            AIsExp node) {
+    public void caseExp_Is(
+            NExp_Is node) {
 
-        Instance left = getExpEval(node.getExp());
-        Instance right = getExpEval(node.getAddExp());
+        Instance left = getExpEval(node.get_Exp());
+        Instance right = getExpEval(node.get_AddExp());
         if (left == right) {
             this.expEval = this.booleanClassInfo.getTrue();
         }
@@ -400,11 +375,11 @@ public class InterpreterEngine
     }
 
     @Override
-    public void caseAEqExp(
-            AEqExp node) {
+    public void caseExp_Eq(
+            NExp_Eq node) {
 
-        Instance left = getExpEval(node.getExp());
-        Instance right = getExpEval(node.getAddExp());
+        Instance left = getExpEval(node.get_Exp());
+        Instance right = getExpEval(node.get_AddExp());
         if (left == null || right == null) {
             if (left == right) {
                 this.expEval = this.booleanClassInfo.getTrue();
@@ -415,19 +390,19 @@ public class InterpreterEngine
         }
         else {
             MethodInfo invokedMethod = left.getClassInfo().getMethodTable()
-                    .getMethodInfo(node.getEq());
+                    .getMethodInfo(node.get_Eq());
             Frame frame = new Frame(this.currentFrame, left, invokedMethod);
             frame.setParam(right);
-            this.expEval = execute(invokedMethod, frame, node.getEq());
+            this.expEval = execute(invokedMethod, frame, node.get_Eq());
         }
     }
 
     @Override
-    public void caseAIsaExp(
-            AIsaExp node) {
+    public void caseExp_Isa(
+            NExp_Isa node) {
 
-        Instance left = getExpEval(node.getExp());
-        ClassInfo right = this.classTable.get(node.getClassName());
+        Instance left = getExpEval(node.get_Exp());
+        ClassInfo right = this.classTable.get(node.get_ClassName());
 
         if (left == null) {
             this.expEval = this.booleanClassInfo.getTrue();
@@ -441,40 +416,40 @@ public class InterpreterEngine
     }
 
     @Override
-    public void caseAAddAddExp(
-            AAddAddExp node) {
+    public void caseAddExp_Add(
+            NAddExp_Add node) {
 
-        Instance left = getExpEval(node.getAddExp());
-        Instance right = getExpEval(node.getLeftUnaryExp());
+        Instance left = getExpEval(node.get_AddExp());
+        Instance right = getExpEval(node.get_LeftUnaryExp());
         if (left == null) {
             throw new InterpreterException("left argument of + method is null",
-                    node.getPlus());
+                    node.get_Plus());
         }
         else if (right == null) {
             throw new InterpreterException(
-                    "right argument of + method is null", node.getPlus());
+                    "right argument of + method is null", node.get_Plus());
         }
         else {
             MethodInfo invokedMethod = left.getClassInfo().getMethodTable()
-                    .getMethodInfo(node.getPlus());
+                    .getMethodInfo(node.get_Plus());
             Frame frame = new Frame(this.currentFrame, left, invokedMethod);
             frame.setParam(right);
-            this.expEval = execute(invokedMethod, frame, node.getPlus());
+            this.expEval = execute(invokedMethod, frame, node.get_Plus());
         }
     }
 
     @Override
-    public void caseANotLeftUnaryExp(
-            ANotLeftUnaryExp node) {
+    public void caseLeftUnaryExp_Not(
+            NLeftUnaryExp_Not node) {
 
-        Instance value = getExpEval(node.getLeftUnaryExp());
+        Instance value = getExpEval(node.get_LeftUnaryExp());
         if (value == null) {
-            throw new InterpreterException("expression is null", node.getNot());
+            throw new InterpreterException("expression is null", node.get_Not());
         }
 
         if (!value.isa(this.booleanClassInfo)) {
-            throw new InterpreterException("expression is not boolean", node
-                    .getNot());
+            throw new InterpreterException("expression is not boolean",
+                    node.get_Not());
         }
 
         if (value == this.booleanClassInfo.getTrue()) {
@@ -486,152 +461,151 @@ public class InterpreterEngine
     }
 
     @Override
-    public void caseANewTerm(
-            ANewTerm node) {
+    public void caseTerm_New(
+            NTerm_New node) {
 
-        ClassInfo classInfo = this.classTable.get(node.getClassName());
+        ClassInfo classInfo = this.classTable.get(node.get_ClassName());
 
         String name = classInfo.getName();
         if (name.equals("Boolean") || name.equals("Integer")
                 || name.equals("String")) {
-            throw new InterpreterException("invalid use of new operator", node
-                    .getNewKwd());
+            throw new InterpreterException("invalid use of new operator",
+                    node.get_NewKwd());
         }
 
         this.expEval = classInfo.newInstance();
     }
 
     @Override
-    public void caseAFieldTerm(
-            AFieldTerm node) {
+    public void caseTerm_Field(
+            NTerm_Field node) {
 
         Instance self = this.currentFrame.getReceiver();
-        this.expEval = self.getField(node.getFieldName());
+        this.expEval = self.getField(node.get_FieldName());
     }
 
     @Override
-    public void caseAVarTerm(
-            AVarTerm node) {
+    public void caseTerm_Var(
+            NTerm_Var node) {
 
-        this.expEval = this.currentFrame.getVar(node.getId());
+        this.expEval = this.currentFrame.getVar(node.get_Id());
     }
 
     @Override
-    public void caseANumTerm(
-            ANumTerm node) {
+    public void caseTerm_Num(
+            NTerm_Num node) {
 
         this.expEval = this.integerClassInfo.newInteger(new BigInteger(node
-                .getNumber().getText()));
+                .get_Number().getText()));
     }
 
     @Override
-    public void caseANullTerm(
-            ANullTerm node) {
+    public void caseTerm_Null(
+            NTerm_Null node) {
 
         this.expEval = null;
     }
 
     @Override
-    public void caseASelfTerm(
-            ASelfTerm node) {
+    public void caseTerm_Self(
+            NTerm_Self node) {
 
         this.expEval = this.currentFrame.getReceiver();
     }
 
     @Override
-    public void caseATrueTerm(
-            ATrueTerm node) {
+    public void caseTerm_True(
+            NTerm_True node) {
 
         this.expEval = this.booleanClassInfo.getTrue();
     }
 
     @Override
-    public void caseAFalseTerm(
-            AFalseTerm node) {
+    public void caseTerm_False(
+            NTerm_False node) {
 
         this.expEval = this.booleanClassInfo.getFalse();
     }
 
     @Override
-    public void caseAStringTerm(
-            AStringTerm node) {
+    public void caseTerm_String(
+            NTerm_String node) {
 
-        String string = node.getString().getText();
+        String string = node.get_String().getText();
         this.expEval = this.stringClassInfo.newString(string.substring(1,
                 string.length() - 1));
     }
 
     @Override
-    public void caseACall(
-            ACall node) {
+    public void caseCall(
+            NCall node) {
 
-        List<PExp> expList = getExpList(node.getExpList());
+        List<NExp> expList = getExpList(node.get_ExpListOpt());
 
-        Instance receiver = getExpEval(node.getRightUnaryExp());
+        Instance receiver = getExpEval(node.get_RightUnaryExp());
         if (receiver == null) {
             throw new InterpreterException("receiver of "
-                    + node.getId().getText() + " method is null", node.getId());
+                    + node.get_Id().getText() + " method is null",
+                    node.get_Id());
         }
 
         MethodInfo invokedMethod = receiver.getClassInfo().getMethodTable()
-                .getMethodInfo(node.getId());
+                .getMethodInfo(node.get_Id());
 
         if (invokedMethod.getParamCount() != expList.size()) {
             throw new InterpreterException("method " + invokedMethod.getName()
                     + " expects " + invokedMethod.getParamCount()
-                    + " arguments", node.getId());
+                    + " arguments", node.get_Id());
         }
 
         Frame frame = new Frame(this.currentFrame, receiver, invokedMethod);
 
-        for (PExp exp : expList) {
+        for (NExp exp : expList) {
             frame.setParam(getExpEval(exp));
         }
 
-        this.expEval = execute(invokedMethod, frame, node.getId());
+        this.expEval = execute(invokedMethod, frame, node.get_Id());
     }
 
     @Override
-    public void caseASelfCall(
-            ASelfCall node) {
+    public void caseSelfCall(
+            NSelfCall node) {
 
-        List<PExp> expList = getExpList(node.getExpList());
+        List<NExp> expList = getExpList(node.get_ExpListOpt());
 
         Instance receiver = this.currentFrame.getReceiver();
 
         MethodInfo invokedMethod = receiver.getClassInfo().getMethodTable()
-                .getMethodInfo(node.getId());
+                .getMethodInfo(node.get_Id());
 
         if (invokedMethod.getParamCount() != expList.size()) {
             throw new InterpreterException("method " + invokedMethod.getName()
                     + " expects " + invokedMethod.getParamCount()
-                    + " arguments", node.getId());
+                    + " arguments", node.get_Id());
         }
 
         Frame frame = new Frame(this.currentFrame, receiver, invokedMethod);
 
-        for (PExp exp : expList) {
+        for (NExp exp : expList) {
             frame.setParam(getExpEval(exp));
         }
 
-        this.expEval = execute(invokedMethod, frame, node.getId());
+        this.expEval = execute(invokedMethod, frame, node.get_Id());
     }
 
     @Override
-    public void caseAExpList(
-            AExpList node) {
+    public void caseExpList(
+            NExpList node) {
 
-        this.expList.add(node.getExp());
-        for (PAdditionalExp additionalExp : node.getAdditionalExps()) {
-            visit(additionalExp);
-        }
+        this.expList.add(node.get_Exp());
+        visit(node.get_AdditionalExps());
     }
 
     @Override
-    public void caseAAdditionalExp(
-            AAdditionalExp node) {
+    public void caseAdditionalExp(
+            NAdditionalExp node) {
 
-        this.expList.add(node.getExp());
+        this.expList.add(node.get_Exp());
     }
 
     public void integerPlus(
@@ -641,7 +615,7 @@ public class InterpreterEngine
                 .getReceiver();
 
         String argName = methodInfo.getParamName(0);
-        Instance arg = this.currentFrame.getVarOrNull(argName);
+        Instance arg = this.currentFrame.getParameterValueWithoutId(argName);
         if (!arg.isa(this.integerClassInfo)) {
             throw new InterpreterException("right argument is not Integer",
                     this.currentFrame.getPreviousFrame().getCurrentLocation());
@@ -659,7 +633,7 @@ public class InterpreterEngine
         StringInstance self = (StringInstance) this.currentFrame.getReceiver();
 
         String argName = methodInfo.getParamName(0);
-        Instance arg = this.currentFrame.getVarOrNull(argName);
+        Instance arg = this.currentFrame.getParameterValueWithoutId(argName);
         if (!arg.isa(this.stringClassInfo)) {
             throw new InterpreterException("right argument is not String",
                     this.currentFrame.getPreviousFrame().getCurrentLocation());
@@ -675,7 +649,7 @@ public class InterpreterEngine
             MethodInfo methodInfo) {
 
         String argName = methodInfo.getParamName(0);
-        Instance arg = this.currentFrame.getVarOrNull(argName);
+        Instance arg = this.currentFrame.getParameterValueWithoutId(argName);
         if (arg == null) {
             throw new InterpreterException("abort argument is null",
                     this.currentFrame.getPreviousFrame().getCurrentLocation());

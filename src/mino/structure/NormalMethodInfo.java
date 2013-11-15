@@ -19,18 +19,18 @@ package mino.structure;
 
 import java.util.*;
 
-import mino.syntax.node.*;
+import mino.language_mino.*;
 import mino.walker.*;
 
 public class NormalMethodInfo
         extends MethodInfo {
 
-    private final AMethodMember definition;
+    private final NMember_Method definition;
 
     NormalMethodInfo(
             MethodTable methodTable,
-            AMethodMember definition,
-            List<TId> params) {
+            NMember_Method definition,
+            List<NId> params) {
 
         super(methodTable, params);
         this.definition = definition;
@@ -39,15 +39,13 @@ public class NormalMethodInfo
     @Override
     public String getName() {
 
-        return this.definition.getId().getText();
+        return this.definition.get_Id().getText();
     }
 
     @Override
     public void execute(
             InterpreterEngine interpreterEngine) {
 
-        for (PStm stm : this.definition.getStms()) {
-            interpreterEngine.visit(stm);
-        }
+        interpreterEngine.visit(this.definition.get_Stms());
     }
 }

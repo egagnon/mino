@@ -17,7 +17,7 @@
 
 package mino.structure;
 
-import mino.syntax.node.*;
+import mino.language_mino.*;
 
 public class BooleanClassInfo
         extends ClassInfo {
@@ -28,7 +28,7 @@ public class BooleanClassInfo
 
     BooleanClassInfo(
             ClassTable classTable,
-            AClassdef definition) {
+            NClassdef definition) {
 
         super(classTable, definition);
     }

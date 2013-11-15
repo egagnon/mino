@@ -20,20 +20,20 @@ package mino.structure;
 import java.util.*;
 
 import mino.exception.*;
-import mino.syntax.node.*;
+import mino.language_mino.*;
 import mino.walker.*;
 
 public class OperatorMethodInfo
         extends MethodInfo {
 
-    private final AOperatorMember definition;
+    private final NMember_Operator definition;
 
     private final Token operatorToken;
 
     OperatorMethodInfo(
             MethodTable methodTable,
-            AOperatorMember definition,
-            List<TId> params,
+            NMember_Operator definition,
+            List<NId> params,
             Token operatorToken) {
 
         super(methodTable, params);
@@ -68,8 +68,6 @@ public class OperatorMethodInfo
     public void execute(
             InterpreterEngine interpreterEngine) {
 
-        for (PStm stm : this.definition.getStms()) {
-            interpreterEngine.visit(stm);
-        }
+        interpreterEngine.visit(this.definition.get_Stms());
     }
 }

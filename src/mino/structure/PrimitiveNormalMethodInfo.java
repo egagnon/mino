@@ -20,7 +20,7 @@ package mino.structure;
 import java.util.*;
 
 import mino.exception.*;
-import mino.syntax.node.*;
+import mino.language_mino.*;
 import mino.walker.*;
 
 public class PrimitiveNormalMethodInfo
@@ -32,14 +32,14 @@ public class PrimitiveNormalMethodInfo
         STRING_TO_SYSTEM_OUT;
     }
 
-    private final APrimitiveMethodMember definition;
+    private final NMember_PrimitiveMethod definition;
 
     private final Operation operation;
 
     PrimitiveNormalMethodInfo(
             MethodTable methodTable,
-            APrimitiveMethodMember definition,
-            List<TId> params) {
+            NMember_PrimitiveMethod definition,
+            List<NId> params) {
 
         super(methodTable, params);
         this.definition = definition;
@@ -48,14 +48,14 @@ public class PrimitiveNormalMethodInfo
         if (className.equals("Object") && getName().equals("abort")) {
             if (params.size() != 1) {
                 throw new InterpreterException(
-                        "abort method has one parameter", definition.getId());
+                        "abort method has one parameter", definition.get_Id());
             }
             this.operation = Operation.OBJECT_ABORT;
         }
         else if (className.equals("Integer") && getName().equals("to_s")) {
             if (params.size() != 0) {
                 throw new InterpreterException("to_s method has no parameter",
-                        definition.getId());
+                        definition.get_Id());
             }
             this.operation = Operation.INTEGER_TO_S;
         }
@@ -63,22 +63,22 @@ public class PrimitiveNormalMethodInfo
                 && getName().equals("to_system_out")) {
             if (params.size() != 0) {
                 throw new InterpreterException(
-                        "to_system_out method has no parameter", definition
-                                .getId());
+                        "to_system_out method has no parameter",
+                        definition.get_Id());
             }
             this.operation = Operation.STRING_TO_SYSTEM_OUT;
         }
         else {
             throw new InterpreterException("method " + getName()
-                    + " is not primitive in class " + className, definition
-                    .getId());
+                    + " is not primitive in class " + className,
+                    definition.get_Id());
         }
     }
 
     @Override
     public String getName() {
 
-        return this.definition.getId().getText();
+        return this.definition.get_Id().getText();
     }
 
     @Override

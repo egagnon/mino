@@ -20,7 +20,7 @@ package mino.structure;
 import java.util.*;
 
 import mino.exception.*;
-import mino.syntax.node.*;
+import mino.language_mino.*;
 import mino.walker.*;
 
 public class PrimitiveOperatorMethodInfo
@@ -31,7 +31,7 @@ public class PrimitiveOperatorMethodInfo
         STRING_PLUS;
     }
 
-    private final APrimitiveOperatorMember definition;
+    private final NMember_PrimitiveOperator definition;
 
     private final Token operatorToken;
 
@@ -39,8 +39,8 @@ public class PrimitiveOperatorMethodInfo
 
     PrimitiveOperatorMethodInfo(
             MethodTable methodTable,
-            APrimitiveOperatorMember definition,
-            List<TId> params,
+            NMember_PrimitiveOperator definition,
+            List<NId> params,
             Token operatorToken) {
 
         super(methodTable, params);

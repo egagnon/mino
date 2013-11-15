@@ -20,7 +20,7 @@ package mino.structure;
 import java.math.*;
 import java.util.*;
 
-import mino.syntax.node.*;
+import mino.language_mino.*;
 
 public class IntegerClassInfo
         extends ClassInfo {
@@ -29,7 +29,7 @@ public class IntegerClassInfo
 
     IntegerClassInfo(
             ClassTable classTable,
-            AClassdef definition) {
+            NClassdef definition) {
 
         super(classTable, definition);
     }

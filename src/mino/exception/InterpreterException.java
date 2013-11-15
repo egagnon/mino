@@ -17,7 +17,7 @@
 
 package mino.exception;
 
-import mino.syntax.node.*;
+import mino.language_mino.*;
 
 public class InterpreterException
         extends RuntimeException {
@@ -37,7 +37,11 @@ public class InterpreterException
     @Override
     public String getMessage() {
 
-        return this.message + " at line " + this.token.getLine() + " position "
-                + this.token.getPos();
+        if (this.token != null) {
+            return this.message + " at line " + this.token.getLine()
+                    + " position " + this.token.getPos();
+        }
+
+        return this.message + " at line 1 position 1";
     }
 }

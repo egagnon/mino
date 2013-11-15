@@ -20,7 +20,7 @@ package mino.structure;
 import java.util.*;
 
 import mino.exception.*;
-import mino.syntax.node.*;
+import mino.language_mino.*;
 
 public class Frame {
 
@@ -49,7 +49,7 @@ public class Frame {
     }
 
     public void setVar(
-            TId id,
+            NId id,
             Instance value) {
 
         String name = id.getText();
@@ -91,7 +91,7 @@ public class Frame {
     }
 
     public Instance getVar(
-            TId id) {
+            NId id) {
 
         String name = id.getText();
 
@@ -102,8 +102,12 @@ public class Frame {
         return this.varNameToValueMap.get(name);
     }
 
-    public Instance getVarOrNull(
+    public Instance getParameterValueWithoutId(
             String name) {
+
+        if (!this.varNameToValueMap.containsKey(name)) {
+            throw new RuntimeException("parameter should have been set");
+        }
 
         return this.varNameToValueMap.get(name);
     }

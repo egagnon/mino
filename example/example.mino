@@ -32,7 +32,7 @@ class Object {
   primitive abort(message);
 
   fun assert(cond,message) {
-    if (cond == false) {
+    if (!cond) {
       abort("assertion failed: " + message);
     }
   }
@@ -41,7 +41,7 @@ class Object {
 class Boolean {
 
   fun to_s() {
-    if(self is true) {
+    if(self) {
       return "true";
     }
     return "false";

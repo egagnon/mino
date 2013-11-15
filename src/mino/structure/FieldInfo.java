@@ -17,17 +17,17 @@
 
 package mino.structure;
 
-import mino.syntax.node.*;
+import mino.language_mino.*;
 
 public class FieldInfo {
 
     private final FieldTable fieldTable;
 
-    private final AFieldMember definition;
+    private final NMember_Field definition;
 
     FieldInfo(
             FieldTable fieldTable,
-            AFieldMember definition) {
+            NMember_Field definition) {
 
         this.fieldTable = fieldTable;
         this.definition = definition;
@@ -35,7 +35,7 @@ public class FieldInfo {
 
     public String getName() {
 
-        return this.definition.getFieldName().getText();
+        return this.definition.get_FieldName().getText();
     }
 
 }

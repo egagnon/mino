@@ -20,7 +20,7 @@ package mino.structure;
 import java.util.*;
 
 import mino.exception.*;
-import mino.syntax.node.*;
+import mino.language_mino.*;
 
 public class Instance {
 
@@ -38,7 +38,7 @@ public class Instance {
     }
 
     public void setField(
-            TFieldName fieldName,
+            NFieldName fieldName,
             Instance value) {
 
         String name = fieldName.getText();
@@ -62,7 +62,7 @@ public class Instance {
     }
 
     public Instance getField(
-            TFieldName fieldName) {
+            NFieldName fieldName) {
 
         String name = fieldName.getText();
         if (!this.fieldNameToValueMap.containsKey(name)) {

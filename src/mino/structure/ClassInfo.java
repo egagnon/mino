@@ -18,13 +18,13 @@
 package mino.structure;
 
 import mino.exception.*;
-import mino.syntax.node.*;
+import mino.language_mino.*;
 
 public class ClassInfo {
 
     private final ClassTable classTable;
 
-    private final AClassdef definition;
+    private final NClassdef definition;
 
     private final ClassInfo superClass;
 
@@ -34,49 +34,50 @@ public class ClassInfo {
 
     ClassInfo(
             ClassTable classTable,
-            AClassdef definition) {
+            NClassdef definition) {
 
         this.classTable = classTable;
         this.definition = definition;
 
         if (getName().equals("Object")) {
             // Object
-            if (definition.getSpecial() != null) {
+            if (definition.get_SpecialOpt() instanceof NSpecialOpt_One) {
                 throw new InterpreterException(
-                        "class Object may not have a super class", definition
-                                .getClassName());
+                        "class Object may not have a super class",
+                        definition.get_ClassName());
             }
             this.superClass = null;
         }
-        else if (definition.getSpecial() == null) {
+        else if (definition.get_SpecialOpt() instanceof NSpecialOpt_Zero) {
             // implicit Object super class
             ClassInfo objectClass = classTable.getObjectClassInfoOrNull();
             if (objectClass == null) {
                 throw new InterpreterException(
-                        "class Object has not yet been defined", definition
-                                .getClassName());
+                        "class Object has not yet been defined",
+                        definition.get_ClassName());
             }
             this.superClass = objectClass;
         }
         else {
             // explicit super class
-            ASpecial aSpecial = (ASpecial) definition.getSpecial();
+            NSpecial aSpecial = ((NSpecialOpt_One) definition.get_SpecialOpt())
+                    .get_Special();
 
-            String superClassName = aSpecial.getClassName().getText();
+            String superClassName = aSpecial.get_ClassName().getText();
             if (superClassName.equals("Boolean")
                     || superClassName.equals("Integer")
                     || superClassName.equals("String")) {
                 throw new InterpreterException("class " + superClassName
-                        + " cannot be specialized", aSpecial.getClassName());
+                        + " cannot be specialized", aSpecial.get_ClassName());
             }
 
-            this.superClass = classTable.get(aSpecial.getClassName());
+            this.superClass = classTable.get(aSpecial.get_ClassName());
         }
     }
 
     public String getName() {
 
-        return this.definition.getClassName().getText();
+        return this.definition.get_ClassName().getText();
     }
 
     public MethodTable getMethodTable() {

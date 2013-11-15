@@ -48,19 +48,23 @@ Parser
     classdefs stms;
 
   classdefs =
-    classdefs classdef | ;
+    {more:} classdefs classdef |
+    {zero:} ;
 
   stms =
-    stms stm | ;
+    {more:} stms stm |
+    {zero:} ;
 
   classdef =
     'class' class_name special_opt '{' members '}';
 
   special_opt =
-    special | ;
+    {one:} special |
+    {zero:} ;
 
   members =
-    members member | ;
+    {more:} members member |
+    {zero:} ;
 
   special =
     'special' class_name;
@@ -73,51 +77,55 @@ Parser
     {primitive_operator:} 'primitive' operator '(' id_list_opt ')' ';';
 
   id_list_opt =
-    id_list | ;
+    {one:} id_list |
+    {zero:} ;
 
   id_list =
     id additional_ids;
 
   additional_ids =
-    additional_ids additional_id | ;
+    {more:} additional_ids additional_id |
+    {zero:} ;
 
   additional_id =
     ',' id;
 
   operator =
-    {plus:} '+' |
-    {eq:} '==';
+    {plus:} [plus:]'+' |
+    {eq:} [eq:]'==';
 
   stm =
     {var_assign:} id '=' exp ';' |
     {field_assign:} field_name '=' exp ';' |
     {call:} call ';' |
     {self_call:} self_call ';' |
-    {while:} 'while' '(' exp ')' '{' stms '}' |
-    {if:} 'if' '(' exp ')' '{' stms '}' else_opt |
-    {return:} 'return' exp_opt ';';
+    {while:} 'while' [l_par:]'(' exp ')' '{' stms '}' |
+    {if:} 'if' [l_par:]'(' exp ')' '{' stms '}' else_opt |
+    {return:} [return_kwd:]'return' exp_opt ';';
 
   exp_opt =
-    exp | ;
+    {one:} exp |
+    {zero:} ;
 
   else_opt =
-    else | ;
+    {one:} else |
+    {zero:} ;
 
   else =
     'else' '{' stms '}';
 
   exp =
     {is:} exp 'is' add_exp |
-    {eq:} exp '==' add_exp |
+    {eq:} exp [eq:]'==' add_exp |
     {isa:} exp 'isa' class_name |
     {simple:} add_exp;
 
   add_exp =
-    {add:} add_exp '+' left_unary_exp |
+    {add:} add_exp [plus:]'+' left_unary_exp |
     {simple:} left_unary_exp;
 
   left_unary_exp =
-    {not:} '!' left_unary_exp |
+    {not:} [not:]'!' left_unary_exp |
     {simple:} right_unary_exp;
 
   right_unary_exp =
@@ -127,7 +135,7 @@ Parser
   term =
     {self_call:} self_call |
     {par:} '(' exp ')' |
-    {new:} 'new' class_name |
+    {new:} [new_kwd:]'new' class_name |
     {field:} field_name |
     {var:} id |
     {num:} number |
@@ -141,7 +149,8 @@ Parser
     right_unary_exp '.' id '(' exp_list_opt ')';
 
   exp_list_opt =
-    exp_list | ;
+    {one:} exp_list |
+    {zero:} ;
 
   self_call =
     id '(' exp_list_opt ')';

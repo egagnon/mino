@@ -20,7 +20,7 @@ package mino.structure;
 import java.util.*;
 
 import mino.exception.*;
-import mino.syntax.node.*;
+import mino.language_mino.*;
 
 public class FieldTable {
 
@@ -37,9 +37,9 @@ public class FieldTable {
     }
 
     public void add(
-            AFieldMember definition) {
+            NMember_Field definition) {
 
-        Token nameToken = definition.getFieldName();
+        Token nameToken = definition.get_FieldName();
         String name = nameToken.getText();
 
         ClassInfo superClassInfo = this.classInfo.getSuperClassInfoOrNull();

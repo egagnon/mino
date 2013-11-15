@@ -20,7 +20,7 @@ package mino.structure;
 import java.util.*;
 
 import mino.exception.*;
-import mino.syntax.node.*;
+import mino.language_mino.*;
 
 public class MethodTable {
 
@@ -35,10 +35,10 @@ public class MethodTable {
     }
 
     public void add(
-            AMethodMember definition,
-            List<TId> params) {
+            NMember_Method definition,
+            List<NId> params) {
 
-        Token nameToken = definition.getId();
+        Token nameToken = definition.get_Id();
         String name = nameToken.getText();
 
         if (this.nameToMethodInfoMap.containsKey(name)) {
@@ -51,8 +51,8 @@ public class MethodTable {
     }
 
     public void add(
-            AOperatorMember definition,
-            List<TId> params,
+            NMember_Operator definition,
+            List<NId> params,
             Token operatorToken) {
 
         String name = operatorToken.getText();
@@ -67,10 +67,10 @@ public class MethodTable {
     }
 
     public void add(
-            APrimitiveMethodMember definition,
-            List<TId> params) {
+            NMember_PrimitiveMethod definition,
+            List<NId> params) {
 
-        Token nameToken = definition.getId();
+        Token nameToken = definition.get_Id();
         String name = nameToken.getText();
 
         if (this.nameToMethodInfoMap.containsKey(name)) {
@@ -83,8 +83,8 @@ public class MethodTable {
     }
 
     public void add(
-            APrimitiveOperatorMember definition,
-            List<TId> params,
+            NMember_PrimitiveOperator definition,
+            List<NId> params,
             Token operatorToken) {
 
         String name = operatorToken.getText();
