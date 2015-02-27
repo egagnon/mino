@@ -385,7 +385,7 @@ public class InterpreterEngine
                 this.expEval = this.booleanClassInfo.getTrue();
             }
             else {
-                this.expEval = this.booleanClassInfo.getTrue();
+                this.expEval = this.booleanClassInfo.getFalse();
             }
         }
         else {
