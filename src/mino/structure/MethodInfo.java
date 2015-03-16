@@ -42,6 +42,7 @@ public abstract class MethodInfo {
                 throw new InterpreterException("duplicate parameter " + name,
                         id);
             }
+            paramNameSet.add(name);
             this.paramNames.add(name);
         }
     }
