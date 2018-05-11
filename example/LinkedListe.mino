@@ -1,0 +1,206 @@
+/* This file is part of Mino.
+ *
+ * See the NOTICE file distributed with this work for copyright information.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+
+class Object {
+
+    fun ==(obj) {
+        return self is obj;
+    }
+
+    fun print(obj) {
+        if(obj == null){
+            print("null");
+        }
+        else{        
+            obj.to_s().to_system_out();
+        }
+    }
+
+    fun to_s() {
+        return null;
+    }
+
+    primitive abort(message);
+
+    fun assert(cond,message) {
+        if (!cond) {
+            abort("assertion failed: " + message);
+        }
+    }
+}
+
+class Boolean {
+    fun to_s() {
+        if(self) {
+            return "true";
+        }
+        return "false";
+    }
+}
+
+class Integer {
+    primitive +(i);
+    primitive to_s();
+}
+
+class String {
+    fun to_s() {
+        return self;
+    }
+
+    primitive +(s);
+    primitive to_system_out();
+}
+
+class Array {
+}
+
+class Node {
+    var _next;
+    var _data;
+    
+    fun init(data,next) {
+        _next = next;
+        _data = data;
+        return self;   
+    }
+   
+    fun getNext() {
+        return _next; 
+    }
+
+    fun getData() {
+        return _data; 
+    }
+
+    fun setNext(next) {
+        _next = next;
+        return self;
+    }
+
+    fun setData(data) {
+        _data = data;
+        return self;
+    }
+}
+
+class Linkedlist{
+    var _list;
+    var _size;
+
+    fun init(){
+        _list = new Node;
+        _size = 0;
+        return self;
+    }
+
+    fun add(data){
+        if(_list.getData() == null){
+            _list = _list.setData(data);
+        }
+        else{
+            actual = _list;
+            while (!(actual.getNext() == null)){
+                actual = actual.getNext();
+            }
+            actual.setNext(new Node.init(data,null));
+        }
+        _size = _size + 1;
+        return self;
+    }
+
+    fun size(){
+        return _size;
+    }
+
+    fun to_s(){
+        display = "";
+        if(!(_list.getData() == null)){
+            display = display + _list.getData();
+            actual = _list.getNext();
+            while(!(actual == null)){
+                display = display + "," + actual.getData();
+                actual = actual.getNext();
+            }
+        }
+        return "[" + display + "]";
+    }
+
+    fun iterator(){
+        new Iterator.init(self);
+        return self;
+    }
+
+    fun getList() {
+        return _list;
+    }
+
+    fun getSize() {
+        return _tail;
+    }
+}
+
+class Iterator {
+    var _next;
+
+    fun init(list) {
+        _next = list.getList();
+        return self;
+    }
+
+    fun hasNext() {
+        return !(_next == null);
+    }
+
+    fun next() {
+        next = _next.getData();
+        _next = _next.getNext();
+        return next;
+    }
+}
+
+/* TEST */
+print("First list : ");
+lst = new Linkedlist.init();
+lst.add("a");
+lst.add("b");
+lst.add("c");
+lst.add("d");
+lst.add("e");
+lst.add("f");
+lst.add("g");
+print("Display the list with the method to_string : ");
+print(lst.to_s());
+print("Size of the list : ");
+print(lst.size());
+print("Display the list with the interator : ");
+iterator = new Iterator.init(lst);
+while (iterator.hasNext()) {
+    print(iterator.next());
+}
+
+print("Second list (empty list) : ");
+lstvide = new Linkedlist.init();
+print("Display the list with the method to_string : ");
+print(lstvide.to_s());
+print("Size of the list : ");
+print(lstvide.size());
+print("Display the list with the interator : ");
+iterator = new Iterator.init(lstvide);
+while (iterator.hasNext()) {
+    print(iterator.next());
+}
