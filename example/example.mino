@@ -22,7 +22,12 @@ class Object {
   }
 
   fun print(obj) {
-    obj.to_s().to_system_out();
+    if(obj == null){
+      print("null");
+    }
+    else{        
+      obj.to_s().to_system_out();
+    }
   }
 
   fun to_s() {
@@ -62,6 +67,26 @@ class String {
 
   primitive +(s);
   primitive to_system_out();
+}
+
+class Array {
+
+  fun to_s() {
+    i=0;
+    while(!(self.size()==i)){
+      if(i == 0){
+        display = self[i].to_s();
+      }
+      else{
+        display = display + "," + self[i].to_s();
+      }
+      i = i+1;
+    }
+    return "[" + display + "]";
+  }
+
+  primitive size();
+  primitive add(s);
 }
 
 class Node {

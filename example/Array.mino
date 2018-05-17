@@ -194,33 +194,30 @@ class Iterator {
 }
 
 /* TEST */
-print("First list : ");
-list = new Linkedlist.init();
-list.add("a");
-list.add("b");
-list.add("c");
-list.add("d");
-list.add("e");
-list.add("f");
-list.add("g");
-print("Display the list with the method to_string : ");
-print(list.to_s());
-print("Size of the list : ");
-print(list.size());
-print("Display the list with the interator : ");
-iterator = new Iterator.init(list);
-while (iterator.hasNext()) {
-    print(iterator.next());
-}
+/*First way to create an Array*/
+firstArray = ["Joe",21,"JOE124587",true];
+/*Second way to create an Array*/
+secondArray = new Array;
+secondArray.add("John");
+secondArray.add(25);
+secondArray.add("JOHN256895");
+secondArray.add(false);
 
-print("Second list (empty list) : ");
-emptyList = new Linkedlist.init();
-print("Display the list with the method to_string : ");
-print(emptyList.to_s());
-print("Size of the list : ");
-print(emptyList.size());
-print("Display the list with the interator : ");
-iterator = new Iterator.init(emptyList);
-while (iterator.hasNext()) {
-    print(iterator.next());
-}
+print("Display the two Arrays create before with the method to_string : ");
+print(firstArray.to_s());
+print(secondArray.to_s());
+print("Size of the first Array : ");
+print(firstArray.size());
+print("Size of the second Array : ");
+print(secondArray.size());
+print("Display the third element of the first Array : ");
+print(firstArray[2]);
+print("Display the third element of the second Array : ");
+print(secondArray[2]);
+/*Change of the third element*/
+firstArray[2]=256;
+secondArray[2]=257;
+print("Display the third element of the first Array after the change : ");
+print(firstArray[2]);
+print("Display the third element of the second Array after the change : ");
+print(secondArray[2]);
