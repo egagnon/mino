@@ -38,7 +38,6 @@ public class ClassInfo {
 
         this.classTable = classTable;
         this.definition = definition;
-
         if (getName().equals("Object")) {
             // Object
             if (definition.get_SpecialOpt() instanceof NSpecialOpt_One) {
@@ -62,16 +61,16 @@ public class ClassInfo {
             // explicit super class
             NSpecial aSpecial = ((NSpecialOpt_One) definition.get_SpecialOpt())
                     .get_Special();
-
             String superClassName = aSpecial.get_ClassName().getText();
             if (superClassName.equals("Boolean")
                     || superClassName.equals("Integer")
-                    || superClassName.equals("String")) {
+                    || superClassName.equals("String")){
+
                 throw new InterpreterException("class " + superClassName
                         + " cannot be specialized", aSpecial.get_ClassName());
             }
-
             this.superClass = classTable.get(aSpecial.get_ClassName());
+
         }
     }
 
