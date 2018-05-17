@@ -71,7 +71,7 @@ class Node {
   fun init(data,next) {
     _next = next;
     _data = data;
-    return self;
+    return self;   
   }
 
   fun getNext() {
@@ -168,52 +168,34 @@ class Iterator {
   }
 }
 
-class A {
-  fun m() {
-    print("I'm in class A.");
-  }
+/* TEST */
+print("First list : ");
+list = new Linkedlist.init();
+list.add("a");
+list.add("b");
+list.add("c");
+list.add("d");
+list.add("e");
+list.add("f");
+list.add("g");
+print("Display the list with the method to_string : ");
+print(list.to_s());
+print("Size of the list : ");
+print(list.size());
+print("Display the list with the interator : ");
+iterator = new Iterator.init(list);
+while (iterator.hasNext()) {
+    print(iterator.next());
 }
 
-class B {
-  fun m() {
-    print("I'm in class B.");
-  }
+print("Second list (empty list) : ");
+emptyList = new Linkedlist.init();
+print("Display the list with the method to_string : ");
+print(emptyList.to_s());
+print("Size of the list : ");
+print(emptyList.size());
+print("Display the list with the interator : ");
+iterator = new Iterator.init(emptyList);
+while (iterator.hasNext()) {
+    print(iterator.next());
 }
-
-class Person {
-  var _name;
-  var _age;
-
-  /* method that plays the role of a constructor */
-  fun init(name, age) {
-    assert(!(name is null), "name must not be null");
-    assert(name isa String, "name must be a String");
-    assert(!(age is null), "age must not be null");
-    assert(age isa Integer, "age must be an Integer");
-    _name = name;
-    _age = age;
-    return self; /* to allow call chaining */
-  }
-
-  fun to_s() {
-    return "name: " + _name + ", age: " + _age.to_s();
-  }
-}
-
-print("HELLO world.");
-
-print(new Person.init("Joe",21));
-
-i = 0;
-while(!(i == 2)) {
-  if(i == 0) {
-    o = new A;
-  }
-  else {
-    o = new B;
-  }
-  o.m();
-  i = i + 1;
-}
-print(i);
-o.k(); /* runtime error expected */
