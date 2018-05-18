@@ -193,52 +193,31 @@ class Iterator {
   }
 }
 
-class A {
-  fun m() {
-    print("I'm in class A.");
-  }
-}
+/* TEST */
+/*First way to create an Array*/
+firstArray = ["Joe",21,"JOE124587",true];
+/*Second way to create an Array*/
+secondArray = new Array;
+secondArray.add("John");
+secondArray.add(25);
+secondArray.add("JOHN256895");
+secondArray.add(false);
 
-class B {
-  fun m() {
-    print("I'm in class B.");
-  }
-}
-
-class Person {
-  var _name;
-  var _age;
-
-  /* method that plays the role of a constructor */
-  fun init(name, age) {
-    assert(!(name is null), "name must not be null");
-    assert(name isa String, "name must be a String");
-    assert(!(age is null), "age must not be null");
-    assert(age isa Integer, "age must be an Integer");
-    _name = name;
-    _age = age;
-    return self; /* to allow call chaining */
-  }
-
-  fun to_s() {
-    return "name: " + _name + ", age: " + _age.to_s();
-  }
-}
-
-print("HELLO world.");
-
-print(new Person.init("Joe",21));
-
-i = 0;
-while(!(i == 2)) {
-  if(i == 0) {
-    o = new A;
-  }
-  else {
-    o = new B;
-  }
-  o.m();
-  i = i + 1;
-}
-print(i);
-o.k(); /* runtime error expected */
+print("Display the two Arrays create before with the method to_string : ");
+print(firstArray.to_s());
+print(secondArray.to_s());
+print("Size of the first Array : ");
+print(firstArray.size());
+print("Size of the second Array : ");
+print(secondArray.size());
+print("Display the third element of the first Array : ");
+print(firstArray[2]);
+print("Display the third element of the second Array : ");
+print(secondArray[2]);
+/*Change of the third element*/
+firstArray[2]=256;
+secondArray[2]=257;
+print("Display the third element of the first Array after the change : ");
+print(firstArray[2]);
+print("Display the third element of the second Array after the change : ");
+print(secondArray[2]);

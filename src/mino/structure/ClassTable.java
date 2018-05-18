@@ -47,6 +47,9 @@ public class ClassTable {
         else if (name.equals("String")) {
             classInfo = new StringClassInfo(this, definition);
         }
+        else if (name.equals("Array")) {
+            classInfo = new ArrayClassInfo(this, definition);
+        }
         else {
             classInfo = new ClassInfo(this, definition);
         }
@@ -86,4 +89,10 @@ public class ClassTable {
 
         return this.nameToClassInfoMap.get("String");
     }
+
+    public ClassInfo getArrayClassInfoOrNull() {
+
+        return this.nameToClassInfoMap.get("Array");
+    }
+
 }

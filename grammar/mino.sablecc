@@ -96,6 +96,7 @@ Parser
 
   stm =
     {var_assign:} id '=' exp ';' |
+    {array_assign:} [l_id:]id [l_bracket:]'['add_exp']' '=' exp ';' |
     {field_assign:} field_name '=' exp ';' |
     {call:} call ';' |
     {self_call:} self_call ';' |
@@ -135,12 +136,15 @@ Parser
   term =
     {self_call:} self_call |
     {par:} '(' exp ')' |
+    {arrayid:} [l_id:]id [l_bracket:]'[' add_exp ']' |
+    {arrayval:} '[' exp_list_opt ']' |
     {new:} [new_kwd:]'new' class_name |
     {field:} field_name |
     {var:} id |
     {num:} number |
     {null:} 'null' |
     {self:} 'self' |
+    {arrayself:} 'self'[l_bracket:]'[' add_exp ']' |
     {true:} 'true' |
     {false:} 'false' |
     {string:} string;

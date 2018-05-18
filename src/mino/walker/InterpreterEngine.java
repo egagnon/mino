@@ -49,6 +49,8 @@ public class InterpreterEngine
 
     private StringClassInfo stringClassInfo;
 
+    private ArrayClassInfo arrayClassInfo;
+
     public void visit(
             Node node) {
 
@@ -167,6 +169,11 @@ public class InterpreterEngine
         if (this.stringClassInfo == null) {
             throw new InterpreterException("class String was not defined", null);
         }
+        this.arrayClassInfo = (ArrayClassInfo) this.classTable
+                .getArrayClassInfoOrNull();
+        if (this.arrayClassInfo == null) {
+            throw new InterpreterException("class Array was not defined", null);
+        }
 
         // create initial Object instance
         Instance instance = this.objectClassInfo.newInstance();
@@ -267,6 +274,31 @@ public class InterpreterEngine
 
         Instance value = getExpEval(node.get_Exp());
         this.currentFrame.setVar(node.get_Id(), value);
+    }
+
+    @Override
+    public void caseStm_ArrayAssign(
+            NStm_ArrayAssign node) {
+
+        Instance var = this.currentFrame.getVar(node.get_LId());
+        if (!var.isa(this.arrayClassInfo)) {
+            throw new InterpreterException("variable is not an array",
+                    node.get_LId());
+        }
+        ArrayInstance arrayVar = (ArrayInstance) var;
+        Instance index = getExpEval(node.get_AddExp());
+        if (!index.isa(this.integerClassInfo)) {
+            throw new InterpreterException("index is not interger",
+                    node.get_LBracket());
+        }
+
+        BigInteger id = ((IntegerInstance) index).getValue();
+        Instance value = getExpEval(node.get_Exp());
+        if (id.intValue() >= arrayVar.getSize()){
+            throw new InterpreterException("index is out of range",
+                    node.get_LBracket());
+        }
+        arrayVar.setValue(id.intValue(), value);
     }
 
     @Override
@@ -461,6 +493,42 @@ public class InterpreterEngine
     }
 
     @Override
+    public void caseTerm_Arrayval(
+            NTerm_Arrayval node) {
+
+        List<NExp> expList = getExpList(node.get_ExpListOpt());
+        List<Instance> values = new ArrayList<Instance>();
+        for (NExp exp : expList) {
+            values.add(getExpEval(exp));
+
+        }
+        this.expEval = this.arrayClassInfo.newInstance(values);
+    }
+
+    @Override
+    public void caseTerm_Arrayid(
+            NTerm_Arrayid node) {
+
+        Instance var = this.currentFrame.getVar(node.get_LId());
+        if (!var.isa(this.arrayClassInfo)) {
+            throw new InterpreterException("variable is not an array",
+                    node.get_LId());
+        }
+        ArrayInstance arrayVar = (ArrayInstance) var;
+        Instance index = getExpEval(node.get_AddExp());
+        if (!index.isa(this.integerClassInfo)) {
+            throw new InterpreterException("index is not interger",
+                    node.get_LBracket());
+        }
+        BigInteger id = ((IntegerInstance) index).getValue();
+        if (id.intValue() >= arrayVar.getSize()){
+            throw new InterpreterException("index is out of range",
+                    node.get_LBracket());
+        }
+        this.expEval =  arrayVar.getValue(id.intValue());
+    }
+
+    @Override
     public void caseTerm_New(
             NTerm_New node) {
 
@@ -472,8 +540,14 @@ public class InterpreterEngine
             throw new InterpreterException("invalid use of new operator",
                     node.get_NewKwd());
         }
+        if (classInfo.isa(this.arrayClassInfo)) {
+            List<Instance> empty = new ArrayList<Instance>();
+            this.expEval = this.arrayClassInfo.newInstance(empty);
+        }
+        else{
+            this.expEval = classInfo.newInstance();
+        }
 
-        this.expEval = classInfo.newInstance();
     }
 
     @Override
@@ -511,6 +585,29 @@ public class InterpreterEngine
             NTerm_Self node) {
 
         this.expEval = this.currentFrame.getReceiver();
+    }
+
+    @Override
+    public void caseTerm_Arrayself(
+            NTerm_Arrayself node) {
+
+        Instance var = this.currentFrame.getReceiver();
+        if (!var.isa(this.arrayClassInfo)) {
+            throw new InterpreterException("variable is not an array",
+                    this.currentFrame.getPreviousFrame().getCurrentLocation());
+        }
+        ArrayInstance arrayVar = (ArrayInstance) var;
+        Instance index = getExpEval(node.get_AddExp());
+        if (!index.isa(this.integerClassInfo)) {
+            throw new InterpreterException("index is not interger",
+                    node.get_LBracket());
+        }
+        BigInteger id = ((IntegerInstance) index).getValue();
+        if (id.intValue() >= arrayVar.getSize()){
+            throw new InterpreterException("index is out of range",
+                    node.get_LBracket());
+        }
+        this.expEval = arrayVar.getValue(id.intValue());
     }
 
     @Override
@@ -671,6 +768,33 @@ public class InterpreterEngine
                 .getReceiver();
         this.currentFrame.setReturnValue(this.stringClassInfo.newString(self
                 .getValue().toString()));
+    }
+
+    public void arraySize(
+            PrimitiveNormalMethodInfo primitiveNormalMethodInfo) {
+
+        Instance self = this.currentFrame.getReceiver();
+        if (!self.isa(this.arrayClassInfo)) {
+            throw new InterpreterException("variable is not an array",
+                    this.currentFrame.getPreviousFrame().getCurrentLocation());
+        }
+        ArrayInstance arrayVar = (ArrayInstance) self;
+        BigInteger bi = BigInteger.valueOf(arrayVar.getSize());
+        this.currentFrame.setReturnValue(this.integerClassInfo.newInteger(bi));
+    }
+
+    public void arrayAdd(
+            MethodInfo methodInfo) {
+
+        Instance self = this.currentFrame.getReceiver();
+        if (!self.isa(this.arrayClassInfo)) {
+            throw new InterpreterException("variable is not an array",
+                    this.currentFrame.getPreviousFrame().getCurrentLocation());
+        }
+        ArrayInstance arrayVar = (ArrayInstance) self;
+        String argName = methodInfo.getParamName(0);
+        Instance value = this.currentFrame.getParameterValueWithoutId(argName);
+        arrayVar.addValue(value);
     }
 
     public void stringToSystemOut(

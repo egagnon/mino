@@ -29,7 +29,9 @@ public class PrimitiveNormalMethodInfo
     private static enum Operation {
         OBJECT_ABORT,
         INTEGER_TO_S,
-        STRING_TO_SYSTEM_OUT;
+        STRING_TO_SYSTEM_OUT,
+        ARRAY_SIZE,
+        ARRAY_ADD,
     }
 
     private final NMember_PrimitiveMethod definition;
@@ -68,6 +70,22 @@ public class PrimitiveNormalMethodInfo
             }
             this.operation = Operation.STRING_TO_SYSTEM_OUT;
         }
+        else if (className.equals("Array")
+                && getName().equals("size")) {
+            if (params.size() != 0) {
+                throw new InterpreterException(
+                        "size method has no parameter",
+                        definition.get_Id());
+            }
+            this.operation = Operation.ARRAY_SIZE;
+        }
+        else if (className.equals("Array") && getName().equals("add")) {
+            if (params.size() != 1) {
+                throw new InterpreterException(
+                        "add method has one parameter", definition.get_Id());
+            }
+            this.operation = Operation.ARRAY_ADD;
+        }
         else {
             throw new InterpreterException("method " + getName()
                     + " is not primitive in class " + className,
@@ -94,6 +112,12 @@ public class PrimitiveNormalMethodInfo
             break;
         case STRING_TO_SYSTEM_OUT:
             interpreterEngine.stringToSystemOut(this);
+            break;
+        case ARRAY_SIZE:
+            interpreterEngine.arraySize(this);
+            break;
+        case ARRAY_ADD:
+            interpreterEngine.arrayAdd(this);
             break;
         default:
             throw new RuntimeException("unhandled case");
