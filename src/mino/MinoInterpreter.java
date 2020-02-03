@@ -40,8 +40,8 @@ public class MinoInterpreter {
                 in = new FileReader(args[0]);
             }
             catch (FileNotFoundException e) {
-                System.err.println("INPUT ERROR: file not found '" + args[0]
-                        + "'.");
+                System.err.println(
+                        "INPUT ERROR: file not found '" + args[0] + "'.");
                 System.exit(1);
             }
         }

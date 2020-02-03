@@ -24,7 +24,7 @@ import mino.language_mino.*;
 public class TreeVisualizer
         extends Walker {
 
-    private HashMap<Node, Integer> ids = new HashMap<Node, Integer>();
+    private HashMap<Node, Integer> ids = new HashMap<>();
 
     private int nextID = 1;
 

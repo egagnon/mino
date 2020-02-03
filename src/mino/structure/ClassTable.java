@@ -24,7 +24,8 @@ import mino.language_mino.*;
 
 public class ClassTable {
 
-    private final Map<String, ClassInfo> nameToClassInfoMap = new LinkedHashMap<String, ClassInfo>();
+    private final Map<String, ClassInfo> nameToClassInfoMap
+            = new LinkedHashMap<>();
 
     public ClassInfo add(
             NClassdef definition) {
@@ -33,8 +34,8 @@ public class ClassTable {
         String name = nameToken.getText();
 
         if (this.nameToClassInfoMap.containsKey(name)) {
-            throw new InterpreterException("duplicate definition of class "
-                    + name, nameToken);
+            throw new InterpreterException(
+                    "duplicate definition of class " + name, nameToken);
         }
 
         ClassInfo classInfo;
@@ -65,8 +66,9 @@ public class ClassTable {
 
         String name = classNameToken.getText();
         if (!this.nameToClassInfoMap.containsKey(name)) {
-            throw new InterpreterException("class " + name
-                    + " has not yet been defined", classNameToken);
+            throw new InterpreterException(
+                    "class " + name + " has not yet been defined",
+                    classNameToken);
         }
 
         return this.nameToClassInfoMap.get(name);

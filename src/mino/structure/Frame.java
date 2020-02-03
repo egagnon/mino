@@ -30,7 +30,8 @@ public class Frame {
 
     private final MethodInfo invokedMethod;
 
-    private final Map<String, Instance> varNameToValueMap = new LinkedHashMap<String, Instance>();
+    private final Map<String, Instance> varNameToValueMap
+            = new LinkedHashMap<>();
 
     private Instance returnValue;
 
@@ -80,8 +81,8 @@ public class Frame {
     public void setParam(
             Instance value) {
 
-        String paramName = this.invokedMethod
-                .getParamName(this.nextParamIndex++);
+        String paramName
+                = this.invokedMethod.getParamName(this.nextParamIndex++);
         this.varNameToValueMap.put(paramName, value);
     }
 

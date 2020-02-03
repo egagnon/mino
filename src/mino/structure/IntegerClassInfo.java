@@ -25,7 +25,8 @@ import mino.language_mino.*;
 public class IntegerClassInfo
         extends ClassInfo {
 
-    private final Map<BigInteger, Instance> valueMap = new LinkedHashMap<BigInteger, Instance>();
+    private final Map<BigInteger, Instance> valueMap
+            = new LinkedHashMap<>();
 
     IntegerClassInfo(
             ClassTable classTable,

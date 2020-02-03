@@ -26,7 +26,8 @@ public class FieldTable {
 
     private final ClassInfo classInfo;
 
-    private final Map<String, FieldInfo> nameToFieldInfoMap = new LinkedHashMap<String, FieldInfo>();
+    private final Map<String, FieldInfo> nameToFieldInfoMap
+            = new LinkedHashMap<>();
 
     private Set<FieldInfo> fields;
 
@@ -45,14 +46,14 @@ public class FieldTable {
         ClassInfo superClassInfo = this.classInfo.getSuperClassInfoOrNull();
         if (superClassInfo != null) {
             if (superClassInfo.getFieldTable().contains(name)) {
-                throw new InterpreterException("field " + name
-                        + " exists in super class", nameToken);
+                throw new InterpreterException(
+                        "field " + name + " exists in super class", nameToken);
             }
         }
 
         if (this.nameToFieldInfoMap.containsKey(name)) {
-            throw new InterpreterException("duplicate definition of field "
-                    + name, nameToken);
+            throw new InterpreterException(
+                    "duplicate definition of field " + name, nameToken);
         }
 
         this.nameToFieldInfoMap.put(name, new FieldInfo(this, definition));
@@ -74,7 +75,7 @@ public class FieldTable {
     public Set<FieldInfo> getFields() {
 
         if (this.fields == null) {
-            Set<FieldInfo> fields = new LinkedHashSet<FieldInfo>();
+            Set<FieldInfo> fields = new LinkedHashSet<>();
 
             ClassInfo superClassInfo = this.classInfo.getSuperClassInfoOrNull();
             if (superClassInfo != null) {

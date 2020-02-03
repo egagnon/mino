@@ -26,7 +26,8 @@ public class MethodTable {
 
     private final ClassInfo classInfo;
 
-    private final Map<String, MethodInfo> nameToMethodInfoMap = new LinkedHashMap<String, MethodInfo>();
+    private final Map<String, MethodInfo> nameToMethodInfoMap
+            = new LinkedHashMap<>();
 
     MethodTable(
             ClassInfo classInfo) {
@@ -42,12 +43,12 @@ public class MethodTable {
         String name = nameToken.getText();
 
         if (this.nameToMethodInfoMap.containsKey(name)) {
-            throw new InterpreterException("duplicate definition of method "
-                    + name, nameToken);
+            throw new InterpreterException(
+                    "duplicate definition of method " + name, nameToken);
         }
 
-        this.nameToMethodInfoMap.put(name, new NormalMethodInfo(this,
-                definition, params));
+        this.nameToMethodInfoMap.put(name,
+                new NormalMethodInfo(this, definition, params));
     }
 
     public void add(
@@ -58,8 +59,8 @@ public class MethodTable {
         String name = operatorToken.getText();
 
         if (this.nameToMethodInfoMap.containsKey(name)) {
-            throw new InterpreterException("duplicate definition of operator "
-                    + name, operatorToken);
+            throw new InterpreterException(
+                    "duplicate definition of operator " + name, operatorToken);
         }
 
         this.nameToMethodInfoMap.put(name, new OperatorMethodInfo(this,
@@ -74,12 +75,12 @@ public class MethodTable {
         String name = nameToken.getText();
 
         if (this.nameToMethodInfoMap.containsKey(name)) {
-            throw new InterpreterException("duplicate definition of method "
-                    + name, nameToken);
+            throw new InterpreterException(
+                    "duplicate definition of method " + name, nameToken);
         }
 
-        this.nameToMethodInfoMap.put(name, new PrimitiveNormalMethodInfo(this,
-                definition, params));
+        this.nameToMethodInfoMap.put(name,
+                new PrimitiveNormalMethodInfo(this, definition, params));
     }
 
     public void add(
@@ -90,12 +91,12 @@ public class MethodTable {
         String name = operatorToken.getText();
 
         if (this.nameToMethodInfoMap.containsKey(name)) {
-            throw new InterpreterException("duplicate definition of operator "
-                    + name, operatorToken);
+            throw new InterpreterException(
+                    "duplicate definition of operator " + name, operatorToken);
         }
 
-        this.nameToMethodInfoMap.put(name, new PrimitiveOperatorMethodInfo(
-                this, definition, params, operatorToken));
+        this.nameToMethodInfoMap.put(name, new PrimitiveOperatorMethodInfo(this,
+                definition, params, operatorToken));
     }
 
     private MethodInfo getMethodInfoOrNull(
@@ -105,8 +106,8 @@ public class MethodTable {
         ClassInfo superClassInfo = this.classInfo.getSuperClassInfoOrNull();
 
         if (methodInfo == null && superClassInfo != null) {
-            methodInfo = superClassInfo.getMethodTable().getMethodInfoOrNull(
-                    name);
+            methodInfo
+                    = superClassInfo.getMethodTable().getMethodInfoOrNull(name);
         }
 
         return methodInfo;

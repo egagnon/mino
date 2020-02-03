@@ -49,7 +49,8 @@ public class OperatorMethodInfo
         else if (getName().equals("==")) {
             if (getParamCount() != 1) {
                 throw new InterpreterException(
-                        "method == must have a single parameter", operatorToken);
+                        "method == must have a single parameter",
+                        operatorToken);
             }
         }
         else {

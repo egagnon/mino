@@ -27,7 +27,7 @@ public abstract class MethodInfo {
 
     private final MethodTable methodTable;
 
-    private final List<String> paramNames = new LinkedList<String>();
+    private final List<String> paramNames = new LinkedList<>();
 
     MethodInfo(
             MethodTable methodTable,
@@ -35,7 +35,7 @@ public abstract class MethodInfo {
 
         this.methodTable = methodTable;
 
-        Set<String> paramNameSet = new LinkedHashSet<String>();
+        Set<String> paramNameSet = new LinkedHashSet<>();
         for (NId id : params) {
             String name = id.getText();
             if (paramNameSet.contains(name)) {

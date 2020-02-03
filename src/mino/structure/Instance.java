@@ -26,7 +26,8 @@ public class Instance {
 
     private final ClassInfo classInfo;
 
-    private final Map<String, Instance> fieldNameToValueMap = new LinkedHashMap<String, Instance>();
+    private final Map<String, Instance> fieldNameToValueMap
+            = new LinkedHashMap<>();
 
     Instance(
             ClassInfo classInfo) {

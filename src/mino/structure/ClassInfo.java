@@ -67,8 +67,9 @@ public class ClassInfo {
             if (superClassName.equals("Boolean")
                     || superClassName.equals("Integer")
                     || superClassName.equals("String")) {
-                throw new InterpreterException("class " + superClassName
-                        + " cannot be specialized", aSpecial.get_ClassName());
+                throw new InterpreterException(
+                        "class " + superClassName + " cannot be specialized",
+                        aSpecial.get_ClassName());
             }
 
             this.superClass = classTable.get(aSpecial.get_ClassName());

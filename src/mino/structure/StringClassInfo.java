@@ -24,7 +24,8 @@ import mino.language_mino.*;
 public class StringClassInfo
         extends ClassInfo {
 
-    private final Map<String, Instance> valueMap = new LinkedHashMap<String, Instance>();
+    private final Map<String, Instance> valueMap
+            = new LinkedHashMap<>();
 
     StringClassInfo(
             ClassTable classTable,

@@ -67,9 +67,9 @@ public class InterpreterEngine
             }
             MethodInfo invokedMethod = frame.getInvokedMethod();
             if (invokedMethod != null) {
-                System.err.println(" in "
-                        + invokedMethod.getClassInfo().getName() + "."
-                        + invokedMethod.getName() + "()" + location);
+                System.err.println(
+                        " in " + invokedMethod.getClassInfo().getName() + "."
+                                + invokedMethod.getName() + "()" + location);
             }
             else {
                 System.err.println(" in main program" + location);
@@ -82,7 +82,7 @@ public class InterpreterEngine
     private List<NId> getParams(
             NIdListOpt node) {
 
-        this.idList = new LinkedList<NId>();
+        this.idList = new LinkedList<>();
         visit(node);
         List<NId> idList = this.idList;
         this.idList = null;
@@ -110,7 +110,7 @@ public class InterpreterEngine
     private List<NExp> getExpList(
             NExpListOpt node) {
 
-        this.expList = new LinkedList<NExp>();
+        this.expList = new LinkedList<>();
         visit(node);
         List<NExp> expList = this.expList;
         this.expList = null;
@@ -162,10 +162,11 @@ public class InterpreterEngine
                     null);
         }
 
-        this.stringClassInfo = (StringClassInfo) this.classTable
-                .getStringClassInfoOrNull();
+        this.stringClassInfo
+                = (StringClassInfo) this.classTable.getStringClassInfoOrNull();
         if (this.stringClassInfo == null) {
-            throw new InterpreterException("class String was not defined", null);
+            throw new InterpreterException("class String was not defined",
+                    null);
         }
 
         // create initial Object instance
@@ -426,8 +427,8 @@ public class InterpreterEngine
                     node.get_Plus());
         }
         else if (right == null) {
-            throw new InterpreterException(
-                    "right argument of + method is null", node.get_Plus());
+            throw new InterpreterException("right argument of + method is null",
+                    node.get_Plus());
         }
         else {
             MethodInfo invokedMethod = left.getClassInfo().getMethodTable()
@@ -444,7 +445,8 @@ public class InterpreterEngine
 
         Instance value = getExpEval(node.get_LeftUnaryExp());
         if (value == null) {
-            throw new InterpreterException("expression is null", node.get_Not());
+            throw new InterpreterException("expression is null",
+                    node.get_Not());
         }
 
         if (!value.isa(this.booleanClassInfo)) {
@@ -495,8 +497,8 @@ public class InterpreterEngine
     public void caseTerm_Num(
             NTerm_Num node) {
 
-        this.expEval = this.integerClassInfo.newInteger(new BigInteger(node
-                .get_Number().getText()));
+        this.expEval = this.integerClassInfo
+                .newInteger(new BigInteger(node.get_Number().getText()));
     }
 
     @Override
@@ -532,8 +534,8 @@ public class InterpreterEngine
             NTerm_String node) {
 
         String string = node.get_String().getText();
-        this.expEval = this.stringClassInfo.newString(string.substring(1,
-                string.length() - 1));
+        this.expEval = this.stringClassInfo
+                .newString(string.substring(1, string.length() - 1));
     }
 
     @Override
@@ -553,9 +555,10 @@ public class InterpreterEngine
                 .getMethodInfo(node.get_Id());
 
         if (invokedMethod.getParamCount() != expList.size()) {
-            throw new InterpreterException("method " + invokedMethod.getName()
-                    + " expects " + invokedMethod.getParamCount()
-                    + " arguments", node.get_Id());
+            throw new InterpreterException(
+                    "method " + invokedMethod.getName() + " expects "
+                            + invokedMethod.getParamCount() + " arguments",
+                    node.get_Id());
         }
 
         Frame frame = new Frame(this.currentFrame, receiver, invokedMethod);
@@ -579,9 +582,10 @@ public class InterpreterEngine
                 .getMethodInfo(node.get_Id());
 
         if (invokedMethod.getParamCount() != expList.size()) {
-            throw new InterpreterException("method " + invokedMethod.getName()
-                    + " expects " + invokedMethod.getParamCount()
-                    + " arguments", node.get_Id());
+            throw new InterpreterException(
+                    "method " + invokedMethod.getName() + " expects "
+                            + invokedMethod.getParamCount() + " arguments",
+                    node.get_Id());
         }
 
         Frame frame = new Frame(this.currentFrame, receiver, invokedMethod);
@@ -611,8 +615,8 @@ public class InterpreterEngine
     public void integerPlus(
             MethodInfo methodInfo) {
 
-        IntegerInstance self = (IntegerInstance) this.currentFrame
-                .getReceiver();
+        IntegerInstance self
+                = (IntegerInstance) this.currentFrame.getReceiver();
 
         String argName = methodInfo.getParamName(0);
         Instance arg = this.currentFrame.getParameterValueWithoutId(argName);
@@ -623,8 +627,8 @@ public class InterpreterEngine
 
         BigInteger left = self.getValue();
         BigInteger right = ((IntegerInstance) arg).getValue();
-        this.currentFrame.setReturnValue(this.integerClassInfo.newInteger(left
-                .add(right)));
+        this.currentFrame.setReturnValue(
+                this.integerClassInfo.newInteger(left.add(right)));
     }
 
     public void stringPlus(
@@ -641,8 +645,8 @@ public class InterpreterEngine
 
         String left = self.getValue();
         String right = ((StringInstance) arg).getValue();
-        this.currentFrame.setReturnValue(this.stringClassInfo.newString(left
-                .concat(right)));
+        this.currentFrame.setReturnValue(
+                this.stringClassInfo.newString(left.concat(right)));
     }
 
     public void objectAbort(
@@ -660,17 +664,17 @@ public class InterpreterEngine
         }
 
         String message = "ABORT: " + ((StringInstance) arg).getValue();
-        throw new InterpreterException(message, this.currentFrame
-                .getPreviousFrame().getCurrentLocation());
+        throw new InterpreterException(message,
+                this.currentFrame.getPreviousFrame().getCurrentLocation());
     }
 
     public void integerToS(
             PrimitiveNormalMethodInfo primitiveNormalMethodInfo) {
 
-        IntegerInstance self = (IntegerInstance) this.currentFrame
-                .getReceiver();
-        this.currentFrame.setReturnValue(this.stringClassInfo.newString(self
-                .getValue().toString()));
+        IntegerInstance self
+                = (IntegerInstance) this.currentFrame.getReceiver();
+        this.currentFrame.setReturnValue(
+                this.stringClassInfo.newString(self.getValue().toString()));
     }
 
     public void stringToSystemOut(
